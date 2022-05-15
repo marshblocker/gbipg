@@ -7,7 +7,7 @@ class Point:
     def __init__(self, x, y):
         self._x = x
         self._y = y
-        self._loc = self._set_loc()
+        self._loc = WIDTH*self._y + self._x
         
     def get_loc(self):
         return self._loc
@@ -23,7 +23,8 @@ class Point:
         self._set_loc()
 
     def will_overlap_point(self, p2):
-        return self._linear_distance(p2) <= MIN_CIRCLE_RADIUS
+        p2_coord = p2.get_coord()
+        return self._distance_squared(p2_coord) <= MIN_CIRCLE_RADIUS_SQUARED
     
     def will_overlap_wall(self):
         px, py = self.get_coord()
@@ -33,16 +34,48 @@ class Point:
         
         if py <= MIN_CIRCLE_RADIUS or HEIGHT - py <= MIN_CIRCLE_RADIUS:
             return True
+                
+        return False
+    
+    def will_overlap_fig(self, canvas_pxls):
+        px, py = self.get_coord()
+        center_point_color = canvas_pxls[self.get_loc()]
+        min_circle_points = self._get_min_circle_points()
         
+        for p_loc in min_circle_points:
+            if canvas_pxls[p_loc] != center_point_color:
+                return True         
+    
         return False
         
-    def _linear_distance(self, p2):
-        '''
-        Calculates the x-value distance and y-value distance between
-        this point and p2, and returns the maximum between the two.
-        '''
+    def _distance_squared(self, p2_coord):
         p1x, p1y = self.get_coord()
-        p2x, p2y = p2.get_coord()
-        return max([abs(p2x - p1x), abs(p2y - p1y)])
+        p2x, p2y = p2_coord
+        
+        dx = p2x - p1x
+        dy = p2y - p1y
+        
+        dx_squared = dx * dx
+        dy_squared = dy * dy
+        
+        return dx_squared + dy_squared
+    
+    def _get_min_circle_points(self):
+        '''
+        Get all points within the circle with this point as its center
+        and its radius is MIN_CIRCLE_RADIUS.
+        '''
+        min_circle_points = []
+        px, py = self.get_coord()
+        
+        for p2y in range(py - MIN_CIRCLE_RADIUS, py + MIN_CIRCLE_RADIUS + 1):
+            for p2x in range(px - MIN_CIRCLE_RADIUS, px + MIN_CIRCLE_RADIUS + 1):
+                if self._distance_squared((p2x, p2y)) <= MIN_CIRCLE_RADIUS_SQUARED:
+                    p2_loc = WIDTH*p2y + p2x
+                    min_circle_points.append(p2_loc)
+                    
+        return min_circle_points
+                
+                
         
     

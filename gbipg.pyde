@@ -6,7 +6,7 @@ from const import *
 
 def setup():        
     size(800, 800)
-    background(BLACK)
+    background(WHITE)
     
     start_time = time.time()
     
@@ -15,12 +15,15 @@ def setup():
     # Set this to False if the loaded image is already properly formatted.
     PREPROCESS = True 
     if displayImage(FILE_NAME, PREPROCESS):
-        GBIPG(True)
+        random_points = generate_random_points(True)
+        # GBIPG(True)
         # GBIPG(False)
         print('Done')    
     else: print('Failed')
     
-    print('Program finished execution after {} seconds.'.format(time.time() - start_time))
+    print('Program finished execution after {} seconds.'
+          .format(round(time.time() - start_time, 3))
+    )
     
 def GBIPG(onFigure):
     ''' 
@@ -34,24 +37,35 @@ def GBIPG(onFigure):
     Return Value:
         None
     '''
-    generate_random_points()
-    
-def generate_random_points():
+    pass
+        
+def generate_random_points(visualize = False):
     random_points = []
     noStroke()
     fill(255, 0, 0)
+    loadPixels()
     
-    for _ in range(NUM_CIRCLES):
+    for _ in range(MAX_NUM_CIRCLES):
         x, y = int(random(WIDTH)), int(random(HEIGHT))
         p = Point(x, y)
-        
         overlap = False
-        for p2 in random_points:
-            if p.will_overlap_point(p2) or p.will_overlap_wall():
-                overlap = True
-                break
+        
+        if p.will_overlap_wall() or p.will_overlap_fig(pixels): 
+            overlap = True
+                        
+        if not overlap:
+            for p2 in random_points:
+                if p.will_overlap_point(p2):
+                    overlap = True
+                    break
             
         if not overlap: 
             random_points.append(p)
-            r = MIN_CIRCLE_RADIUS
+            
+    if visualize:
+        r = MIN_CIRCLE_RADIUS
+        for p in random_points:
+            x, y = p.get_coord()
             ellipse(x, y, r, r)
+            
+    return random_points
