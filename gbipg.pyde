@@ -11,7 +11,7 @@ def setup():
     start_time = time.time()
     
     # Change FILE_NAME if necessary.
-    FILE_NAME = "square.png"
+    FILE_NAME = "circle.png"
     # Set this to False if the loaded image is already properly formatted.
     PREPROCESS = True 
     if displayImage(FILE_NAME, PREPROCESS):
