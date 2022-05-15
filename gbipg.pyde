@@ -40,6 +40,20 @@ def GBIPG(onFigure):
     pass
         
 def generate_random_points(visualize = False):
+    '''
+    Return a list of random points in the canvas. The random points are generated
+    such that they do not overlap with other points, figure boundary, and the canvas 
+    wall.
+    
+    Params:
+        visualize: boolean := If True, the random points will be drawn on the canvas
+        using circles with radius MIN_CIRCLE_RADIUS. Note that this will draw over the
+        canvas, so if the canvas' pixel information is needed, don't use this (or transfer
+        the circles in another image). This is initially set to False.
+        
+    Return Value:
+        random_points: List[Point]
+    '''
     random_points = []
     noStroke()
     fill(255, 0, 0)
@@ -54,6 +68,7 @@ def generate_random_points(visualize = False):
             overlap = True
                         
         if not overlap:
+            # TODO: Don't check all points in random_points, only points near p.
             for p2 in random_points:
                 if p.will_overlap_point(p2):
                     overlap = True
