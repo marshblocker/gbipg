@@ -11,11 +11,11 @@ def setup():
     start_time = time.time()
     
     # Change FILE_NAME if necessary.
-    FILE_NAME = "square.png"
+    FILE_NAME = "spring.png"
     # Set this to False if the loaded image is already properly formatted.
     PREPROCESS = True 
     if displayImage(FILE_NAME, PREPROCESS):
-        random_points = generate_random_points(True)
+        fig_random_points, bg_random_points = generate_random_points(True)
         # GBIPG(True)
         # GBIPG(False)
         print('Success')    
@@ -43,9 +43,9 @@ def GBIPG(onFigure):
         
 def generate_random_points(visualize = False):
     '''
-    Return a list of random points in the canvas. The random points are generated
-    such that they do not overlap with other points, figure boundary, and the canvas 
-    wall.
+    Return a list of random points in the background and a list of random points in the figure. 
+    The random points are generated such that they do not overlap with other points, 
+    figure boundary, and the canvas wall.
     
     Params:
         visualize: boolean := If True, the random points will be drawn on the canvas
@@ -54,35 +54,44 @@ def generate_random_points(visualize = False):
         the circles in another image). This is initially set to False.
         
     Return Value:
-        random_points: List[Point]
+        (fig_random_points, bg_random_points): Tuple[List[Point], List[Point]]
     '''
-    random_points = []
+    bg_random_points = []
+    fig_random_points = []
+    
     noStroke()
     fill(255, 0, 0)
     loadPixels()
     
-    for _ in range(MAX_NUM_CIRCLES):
+    for i in range(MAX_NUM_CIRCLES):
         x, y = int(random(WIDTH)), int(random(HEIGHT))
         p = Point(x, y)
         overlap = False
         
         if p.will_overlap_wall() or p.will_overlap_fig(pixels): 
             overlap = True
-                        
+        
+        # If point is located inside the figure.
+        in_fig = (pixels[p.get_loc()] == BLACK_RGB)
+                                                
         if not overlap:
             # TODO: Don't check all points in random_points, only points near p.
+            random_points = fig_random_points if in_fig else bg_random_points
             for p2 in random_points:
                 if p.will_overlap_point(p2):
                     overlap = True
                     break
-            
-        if not overlap: 
-            random_points.append(p)
+                            
+        if not overlap:
+            if in_fig:
+                fig_random_points.append(p)
+            else:
+                bg_random_points.append(p)
             
     if visualize:
         r = MIN_CIRCLE_RADIUS
-        for p in random_points:
+        for p in fig_random_points + bg_random_points:
             x, y = p.get_coord()
             ellipse(x, y, r, r)
             
-    return random_points
+    return (fig_random_points, bg_random_points)

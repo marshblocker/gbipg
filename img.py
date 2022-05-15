@@ -27,9 +27,8 @@ def displayImage(file_name, preprocess = True):
     return True
     
 def preprocessImage(img):
-    '''
-    Preprocess the image before being displayed on the canvas. This function
-    performs the following on the image:
+    ''' Preprocess the given image. 
+    This function performs the following on the image:
         - Resize image to the size of the canvas.
         - Check if there are other colors on the image besides black and white.
         
