@@ -1,3 +1,5 @@
+import time
+
 from img import displayImage
 from classes import Point
 from const import *
@@ -5,6 +7,8 @@ from const import *
 def setup():        
     size(800, 800)
     background(BLACK)
+    
+    start_time = time.time()
     
     # Change FILE_NAME if necessary.
     FILE_NAME = "square.png"
@@ -14,7 +18,9 @@ def setup():
         GBIPG(True)
         # GBIPG(False)
         print('Done')    
-    else: print('Failed') 
+    else: print('Failed')
+    
+    print('Program finished execution after {} seconds.'.format(time.time() - start_time))
     
 def GBIPG(onFigure):
     ''' 
@@ -43,7 +49,6 @@ def generate_random_points():
         for p2 in random_points:
             if p.will_overlap_point(p2) or p.will_overlap_wall():
                 overlap = True
-                
                 break
             
         if not overlap: 
