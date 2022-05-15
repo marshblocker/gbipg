@@ -1,11 +1,7 @@
 from const import *
 
 def displayImage(file_name, preprocess):
-    '''
-    Display image on the canvas. If specified, the image will be preprocessed
-    before being displayed depending on the standardized format for the program's
-    image input.
-    
+    ''' Preprocess (if specified) and display image on the canvas.
     Params:
         file_name: str := Name of the image file. Must be stored in the 'data'
                           folder and must be in PNG format.

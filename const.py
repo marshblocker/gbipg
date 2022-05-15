@@ -10,3 +10,5 @@ WHITE = 255
 # Change if necessary.
 BG_COLOR_SCHEME = ['#008d37', '#7cbc4a']
 FIG_COLOR_SCHEME = ['#c1152d', '#e2644e']
+
+MIN_CIRCLE_RADIUS = 5
