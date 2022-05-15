@@ -11,15 +11,17 @@ def setup():
     start_time = time.time()
     
     # Change FILE_NAME if necessary.
-    FILE_NAME = "circle.png"
+    FILE_NAME = "square.png"
     # Set this to False if the loaded image is already properly formatted.
     PREPROCESS = True 
     if displayImage(FILE_NAME, PREPROCESS):
         random_points = generate_random_points(True)
         # GBIPG(True)
         # GBIPG(False)
-        print('Done')    
-    else: print('Failed')
+        print('Success')    
+    else: 
+        print('Failed')
+        exit()
     
     print('Program finished execution after {} seconds.'
           .format(round(time.time() - start_time, 3))

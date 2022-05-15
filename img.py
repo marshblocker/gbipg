@@ -1,19 +1,20 @@
 from const import *
+import utils
 
-def displayImage(file_name, preprocess):
+def displayImage(file_name, preprocess = True):
     ''' Preprocess (if specified) and display image on the canvas.
     Params:
         file_name: str := Name of the image file. Must be stored in the 'data'
                           folder and must be in PNG format.
         
         preprocess: boolean := If True, preprocessImage() will be called on the 
-                               loaded image.
+                               loaded image. Initially set to True.
                                
     Return Value:
         boolean := If the image was displayed successfully.
     '''
     if not file_name.endswith('.png'):
-        print('Supplied image is not in PNG format.')
+        print('Error: Supplied image is not in PNG format.')
         return False
     
     img = loadImage(file_name)
@@ -32,9 +33,9 @@ def preprocessImage(img):
         - Resize image to the size of the canvas.
         - Check if there are other colors on the image besides black and white.
         
-    For now, preprocessImage() does not change non-B&W colors to B&W, instead
-    this fails to preprocess the given image. Hence, make sure the given image
-    is pure B&W.
+    If there are pixels that are 'near-black' (greyscale), they will be changed 
+    to black. Otherwise, the preprocessing of the image will fail if there are 
+    non-greyscale pixels.
     
     Params:
         img: PImage := The image to be preprocessed.
@@ -43,6 +44,15 @@ def preprocessImage(img):
         boolean := If the image was preprocessed successfully.
     '''
     img.resize(WIDTH, HEIGHT)
+    img.loadPixels()
     
-    # TODO: Check if there are unnecessary colors inside the plate.
+    for i, p_color in enumerate(img.pixels):
+        if p_color == WHITE_RGB or p_color == BLACK_RGB:
+            continue
+        elif utils.is_greyscale(p_color):
+            img.pixels[i] = BLACK_RGB
+        else:
+            print('Error: The image contains non-greyscale pixel.')
+            return False
+    
     return True
