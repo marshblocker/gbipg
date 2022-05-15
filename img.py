@@ -18,7 +18,9 @@ def displayImage(file_name, preprocess):
     
     img = loadImage(file_name)
     
-    if preprocess: preprocessImage(img)
+    if preprocess: 
+        if not preprocessImage(img):
+            return False
     
     image(img, 0, 0)
     return True
@@ -43,3 +45,4 @@ def preprocessImage(img):
     img.resize(WIDTH, HEIGHT)
     
     # TODO: Check if there are unnecessary colors inside the plate.
+    return True

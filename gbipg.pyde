@@ -1,7 +1,8 @@
-from img import displayImage, preprocessImage
+from img import displayImage
+from classes import Point
 from const import *
 
-def setup():    
+def setup():        
     size(800, 800)
     background(BLACK)
     
@@ -10,7 +11,7 @@ def setup():
     # Set this to False if the loaded image is already properly formatted.
     PREPROCESS = True 
     if displayImage(FILE_NAME, PREPROCESS):
-        # GBIPG(True)
+        GBIPG(True)
         # GBIPG(False)
         print('Done')    
     else: print('Failed') 
@@ -27,4 +28,25 @@ def GBIPG(onFigure):
     Return Value:
         None
     '''
-    pass
+    generate_random_points()
+    
+def generate_random_points():
+    random_points = []
+    noStroke()
+    fill(255, 0, 0)
+    
+    for _ in range(NUM_CIRCLES):
+        x, y = int(random(WIDTH)), int(random(HEIGHT))
+        p = Point(x, y)
+        
+        overlap = False
+        for p2 in random_points:
+            if p.will_overlap_point(p2) or p.will_overlap_wall():
+                overlap = True
+                
+                break
+            
+        if not overlap: 
+            random_points.append(p)
+            r = MIN_CIRCLE_RADIUS
+            ellipse(x, y, r, r)
