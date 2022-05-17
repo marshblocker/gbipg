@@ -8,11 +8,10 @@ WHITE = 255
 BLACK_RGB = color(0, 0, 0)
 WHITE_RGB = color(255, 255, 255)
 
-# Choice of color scheme adapted from Ian Faust's (similar) work:
-# https://ianfaust.com/2016/02/19/Ishihara/.
-# Change if necessary.
-BG_COLOR_SCHEME = ['#008d37', '#7cbc4a']
-FIG_COLOR_SCHEME = ['#c1152d', '#e2644e']
+FIG_COLOR_SCHEME = ['#3fac70', '#98a86d', '#c5bc6e', '#87934b']
+BG_COLOR_SCHEME = ['#c77740', '#e49361', '#e8a970', '#d69a79']
 
-MIN_CIRCLE_RADIUS = 10
-MAX_NUM_CIRCLES = 10000
+RED_COLOR_SCHEME = ['#ff0000']
+
+MIN_CIRCLE_RADIUS = 8
+MAX_NUM_CIRCLES = 50000

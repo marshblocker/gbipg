@@ -3,7 +3,8 @@ import utils
 
 def displayImage(file_name, preprocess = True):
     ''' Preprocess (if specified) and display image on the canvas.
-    Params:
+    
+    Parameters:
         file_name: str := Name of the image file. Must be stored in the 'data'
                           folder and must be in PNG format.
         
@@ -28,15 +29,16 @@ def displayImage(file_name, preprocess = True):
     
 def preprocessImage(img):
     ''' Preprocess the given image. 
+    
     This function performs the following on the image:
-        - Resize image to the size of the canvas.
+        - Resize image to the size of the canvas (WIDTH, HEIGHT).
         - Check if there are other colors on the image besides black and white.
         
     If there are pixels that are 'near-black' (greyscale), they will be changed 
     to black. Otherwise, the preprocessing of the image will fail if there are 
     non-greyscale pixels.
     
-    Params:
+    Parameter:
         img: PImage := The image to be preprocessed.
         
     Return Value:

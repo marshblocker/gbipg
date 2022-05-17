@@ -5,7 +5,7 @@ from const import *
 def distance(p1, p2):
     ''' Squared Euclidean distance between p1 and p2.
     
-    Params:
+    Parameters:
         p1: Tuple[int, int]
         p2: Tuple[int, int]
         
@@ -27,7 +27,7 @@ def distance(p1, p2):
 def distance_squared(p1, p2):
     ''' Squared Euclidean distance between p1 and p2.
     
-    Params:
+    Parameters:
         p1: Tuple[int, int]
         p2: Tuple[int, int]
         
@@ -55,7 +55,7 @@ def get_opposite_colr_points_in_circle(p, r, canvas_pxls):
     Get all points that are opposite the color of point p within the
     circle with center point p and radius r.
     
-    Params:
+    Parameters:
         p: Point := center point of the circle.
         r: int := radius of the circle.
         canvas_pxls: List[color] := color of each pixel in the canvas.
@@ -88,7 +88,7 @@ def opposite_colr_point_in_circle(p, r, canvas_pxls):
     Checks if a point that has its color opposite to point p is 
     within the circle with center point p and radius r.
     
-    Params:
+    Parameters:
         p: Point := center point of the circle.
         r: int := radius of the circle.
         canvas_pxls: List[color] := color of each pixel in the canvas.

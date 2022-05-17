@@ -1,3 +1,5 @@
+import random as rand
+
 from const import *
 import utils
 
@@ -66,8 +68,8 @@ class Node():
         Get all adjacent nodes of this node and adjust max_radius 
         accordingly.
         
-        Params:
-            indx: int := Index of this node in the nodes_list.
+        Parameters:
+            indx: int := Index of this node in the node_list.
             node_list: List[Node]
             canvas_pxls: List[color]
             
@@ -95,7 +97,9 @@ class Node():
             
         for index in adj_nodes:
             if index not in self.adj_nodes:
-                self.adj_nodes.append(index)        
+                self.adj_nodes.append(index)
+                if indx not in node_list[index].adj_nodes:
+                    node_list[index].adj_nodes.append(indx)
         
     def _nearest_wall_distance(self):
         cx, cy = self.center.get_coord()
@@ -124,21 +128,28 @@ class Node():
         return nearest_dist
     
 class CirclesAdjacencyGraph:
+    ''' 
+    A graph with nodes representing the circles of the Ishihara Plate. Two nodes are adjacent with
+    each other when at least one of them has their max_radius bounded by the other node.
+    
+    Attributes:
+        nodes: List[Node]
+    '''
     def __init__(self, center_points, canvas_pxls):
         self.nodes = self._get_nodes(center_points)
         for i in range(len(self.nodes)):
             self.nodes[i].build_adj_nodes(i, self.nodes, canvas_pxls)
             
-    def visualize(self):
-        fill(255, 0, 0)
+    def visualize(self, color_scheme):
         noStroke()
         r = MIN_CIRCLE_RADIUS
         for node in self.nodes:
+            fill(rand.choice(color_scheme))
             cx, cy = node.center.get_coord()
             circle(cx, cy, 2*r)
             
         for node in self.nodes:
-            colr = color(random(255), random(255), random(255))
+            colr = color(rand.uniform(0, 255), rand.uniform(0, 255), rand.uniform(0, 255))
             stroke(colr)
             fill(colr)
             cx, cy = node.center.get_coord()
