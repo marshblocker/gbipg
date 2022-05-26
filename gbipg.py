@@ -1,5 +1,6 @@
 import time
 import random as rand
+import json
 
 from img import displayImage
 from classes import Point, CirclesAdjacencyGraph
@@ -10,16 +11,16 @@ def setup():
     size(800, 800)
     background(WHITE)
     
-    print('Hi')
     start_time = time.time()
     
-    # Change FILE_NAME if necessary.
-    FILE_NAME = '3.png'
-    # Set this to False if the loaded image is already properly formatted.
-    # See block comment of preprocessImage() to know what "properly formatted" 
-    # means.
-    PREPROCESS = True 
-    if displayImage(FILE_NAME, PREPROCESS):
+    config = open('config.json')
+    config_json = json.load(config)
+    config.close()
+
+    file_name = config_json['image']['file_name']
+    preprocess = config_json['image']['preprocess']
+
+    if displayImage(file_name, preprocess):
         GBIPG(False)
         print('Success')    
     else: 

@@ -1,3 +1,9 @@
+import json
+
+config = open('config.json')
+config_json = json.load(config)
+config.close()
+
 # Canvas dimensions.
 WIDTH = 800
 HEIGHT = 800
@@ -8,10 +14,10 @@ WHITE = 255
 BLACK_RGB = color(0, 0, 0)
 WHITE_RGB = color(255, 255, 255)
 
-FIG_COLOR_SCHEME = ['#3fac70', '#98a86d', '#c5bc6e', '#87934b']
-BG_COLOR_SCHEME = ['#c77740', '#e49361', '#e8a970', '#d69a79']
+FIG_COLOR_SCHEME = config_json['color_scheme']['figure']
+BG_COLOR_SCHEME = config_json['color_scheme']['background']
 
 RED_COLOR_SCHEME = ['#ff0000']
 
-MIN_CIRCLE_RADIUS = 8
-MAX_NUM_CIRCLES = 50000
+MIN_CIRCLE_RADIUS = config_json['circles']['min_radius']
+MAX_NUM_CIRCLES = config_json['circles']['max_num']
