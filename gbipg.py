@@ -23,23 +23,29 @@ def setup():
     PREPROCESS_IMG = config_json['image']['preprocess']
     DISPLAY_IMG = config_json['image']['display']
 
-    if MODE == 'normal':
-        normal_mode(FILE_NAME, PREPROCESS_IMG, DISPLAY_IMG)
-    elif MODE == 'benchmark':
-        ITERATIONS = config_json['mode']['benchmark_iterations']
-        benchmark_mode(FILE_NAME, PREPROCESS_IMG, DISPLAY_IMG, ITERATIONS)
+    img = getImage(FILE_NAME, PREPROCESS_IMG)
+    img.loadPixels()
+    if img:
+        if MODE == 'normal':
+            normal_mode(img, img.pixels, DISPLAY_IMG)
+        elif MODE == 'benchmark':
+            ITERATIONS = config_json['mode']['benchmark_iterations']
+            benchmark_mode(img, img.pixels, DISPLAY_IMG, ITERATIONS)
+        else:
+            print('Error: Invalid mode.')
+            exit()
     else:
-        print('Error: Invalid mode.')
+        print('Failed.')
         exit()
 
-def normal_mode(file_name, preprocess_img, display_img):
+def normal_mode(img, img_pxls, display_img):
     print('Program start.')
-    if run(file_name, preprocess_img, display_img):
+    if run(img, img_pxls, display_img):
         print('Success.')
     else:
         print('Failed.')
 
-def benchmark_mode(file_name, preprocess_img, display_img, iterations):
+def benchmark_mode(img, img_pxls, display_img, iterations):
     print('Program start.')
     avg_time = 0.0
 
@@ -47,7 +53,7 @@ def benchmark_mode(file_name, preprocess_img, display_img, iterations):
     for i in range(1, iterations+1):
         start_time = time.time()
 
-        success = run(file_name, preprocess_img, display_img)
+        success = run(img, img_pxls, display_img)
 
         duration = round(time.time() - start_time, 3)
         avg_time += duration
@@ -65,13 +71,11 @@ def benchmark_mode(file_name, preprocess_img, display_img, iterations):
     
     print('Average runtime: {} seconds'.format(avg_time))
 
-def run(file_name, preprocess_img, display_img):
+def run(img, img_pxls, display_img):
     background(WHITE)
-    img = getImage(file_name, preprocess_img)
     if img:
         if display_img: image(img, 0, 0)
-        img.loadPixels()
-        GBIPG(img.pixels)
+        GBIPG(img_pxls)
         return True
     else:
         return False
@@ -97,7 +101,7 @@ def GBIPG(img_pxls):
         fig_cag, visualize=True, color_scheme=FIG_COLOR_SCHEME)
     solved_bg_cag = solve_csp_of_cag(
         bg_cag, visualize=True, color_scheme=BG_COLOR_SCHEME)
-
+    
 
 def generate_random_points(img_pxls, visualize=False, color_scheme=RED_COLOR_SCHEME):
     '''
