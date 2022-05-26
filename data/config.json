@@ -1,4 +1,8 @@
 {
+    "mode": {
+        "type": "benchmark",
+        "benchmark_iterations": 1
+    },
     "image": {
         "file_name": "3.png",
         "preprocess": true,
