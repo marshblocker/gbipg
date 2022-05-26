@@ -146,7 +146,7 @@ class CirclesAdjacencyGraph:
         for node in self.nodes:
             fill(rand.choice(color_scheme))
             cx, cy = node.center.get_coord()
-            circle(cx, cy, 2*r)
+            ellipse(cx, cy, 2*r, 2*r)
             
         for node in self.nodes:
             colr = color(rand.uniform(0, 255), rand.uniform(0, 255), rand.uniform(0, 255))
@@ -157,7 +157,7 @@ class CirclesAdjacencyGraph:
                 node2 = self.nodes[indx]
                 cx2, cy2 = node2.center.get_coord()
                 line(cx, cy, cx2, cy2)
-                circle(cx, cy, r)
+                ellipse(cx, cy, r, r)
         
     def _get_nodes(self, center_points):
         nodes = []

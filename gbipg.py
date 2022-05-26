@@ -10,6 +10,7 @@ def setup():
     size(800, 800)
     background(WHITE)
     
+    print('Hi')
     start_time = time.time()
     
     # Change FILE_NAME if necessary.
@@ -99,7 +100,7 @@ def generate_random_points(canvas_pxls, visualize = False, color_scheme = RED_CO
         for p in fig_random_points + bg_random_points:
             fill(rand.choice(color_scheme))
             x, y = p.get_coord()
-            circle(x, y, 2*r)
+            ellipse(x, y, 2*r, 2*r)
             
     return (fig_random_points, bg_random_points)
 
@@ -152,7 +153,7 @@ def solve_csp_of_cag(cag, visualize = False, color_scheme = [RED_COLOR_SCHEME]):
             fill(rand.choice(color_scheme))
             x, y = node.center.get_coord()
             r = node.radius
-            circle(x, y, 2*r)
+            ellipse(x, y, 2*r, 2*r)
     
     return solved_cag
             
