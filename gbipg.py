@@ -17,13 +17,13 @@ def setup():
     config_json = json.load(config)
     config.close()
 
-    file_name = config_json['image']['file_name']
-    preprocess = config_json['image']['preprocess']
-    display_img = config_json['image']['display']
+    FILE_NAME = config_json['image']['file_name']
+    PREPROCESS_IMG = config_json['image']['preprocess']
+    DISPLAY_IMG = config_json['image']['display']
 
-    img = getImage(file_name, preprocess)
+    img = getImage(FILE_NAME, PREPROCESS_IMG)
     if img:
-        if display_img:
+        if DISPLAY_IMG:
             image(img, 0, 0)
         GBIPG(True)
         print('Success')    
