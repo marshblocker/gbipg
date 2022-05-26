@@ -22,6 +22,9 @@ def getImage(file_name, preprocess = True):
     
     img = loadImage(file_name)
     
+    if not img:
+        return None
+    
     if preprocess: 
         if not preprocessImage(img):
             return None
