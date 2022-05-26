@@ -49,10 +49,14 @@ def preprocessImage(img):
     img.loadPixels()
     
     for i, p_color in enumerate(img.pixels):
-        if p_color == WHITE_RGB or p_color == BLACK_RGB:
+        if p_color in [WHITE_RGB, BLACK_RGB]:
             continue
         elif utils.is_greyscale(p_color):
-            img.pixels[i] = BLACK_RGB
+            r, g, b = red(p_color), green(p_color), blue(p_color)
+            if r + g + b < GREYSCALE_THRESHOLD * 3:
+                img.pixels[i] = BLACK_RGB
+            else:
+                img.pixels[i] = WHITE_RGB
         else:
             print('Error: The image contains non-greyscale pixel.')
             return False
