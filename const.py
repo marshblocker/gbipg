@@ -22,3 +22,5 @@ RED_COLOR_SCHEME = ['#ff0000']
 
 MIN_CIRCLE_RADIUS = config_json['circles']['min_radius']
 MAX_NUM_CIRCLES = config_json['circles']['max_num']
+
+WALL_RADIUS = 300

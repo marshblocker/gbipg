@@ -39,10 +39,7 @@ class Point:
     def will_overlap_wall(self):
         px, py = self.get_coord()
 
-        if px <= MIN_CIRCLE_RADIUS or WIDTH - px <= MIN_CIRCLE_RADIUS:
-            return True
-
-        if py <= MIN_CIRCLE_RADIUS or HEIGHT - py <= MIN_CIRCLE_RADIUS:
+        if utils.distance_squared((px, py), (WIDTH/2, HEIGHT/2)) > WALL_RADIUS**2:
             return True
 
         return False
