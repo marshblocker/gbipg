@@ -12,31 +12,69 @@ def setup():
     size(800, 800)
     background(WHITE)
 
-    print('Program start.')
-    start_time = time.time()
-
     config = open('config.json')
     config_json = json.load(config)
     config.close()
+
+    # This could be 'normal' mode or 'benchmark' mode.
+    MODE = config_json['mode']['type']
 
     FILE_NAME = config_json['image']['file_name']
     PREPROCESS_IMG = config_json['image']['preprocess']
     DISPLAY_IMG = config_json['image']['display']
 
-    img = getImage(FILE_NAME, PREPROCESS_IMG)
-    if img:
-        if DISPLAY_IMG:
-            image(img, 0, 0)
-        img.loadPixels()
-        GBIPG(img.pixels)
+    if MODE == 'normal':
+        normal_mode(FILE_NAME, PREPROCESS_IMG, DISPLAY_IMG)
+    elif MODE == 'benchmark':
+        ITERATIONS = config_json['mode']['benchmark_iterations']
+        benchmark_mode(FILE_NAME, PREPROCESS_IMG, DISPLAY_IMG, ITERATIONS)
+    else:
+        print('Error: Invalid mode.')
+        exit()
+
+def normal_mode(file_name, preprocess_img, display_img):
+    print('Program start.')
+    if run(file_name, preprocess_img, display_img):
         print('Success.')
     else:
         print('Failed.')
-        exit()
 
-    print('Program finished execution after {} seconds.'
-          .format(round(time.time() - start_time, 3))
-          )
+def benchmark_mode(file_name, preprocess_img, display_img, iterations):
+    print('Program start.')
+    avg_time = 0.0
+
+    success = True
+    for i in range(1, iterations+1):
+        start_time = time.time()
+
+        success = run(file_name, preprocess_img, display_img)
+
+        duration = round(time.time() - start_time, 3)
+        avg_time += duration
+        print('Iteration {} of {}: {} seconds.'
+              .format(i, iterations, duration))
+
+        if not success:
+            print('Failed at iteration {} of {}'.format(i, iterations))
+            avg_time = avg_time / i
+            break
+
+    if success:
+        print('Success.')
+        avg_time = round(avg_time / iterations, 3)
+    
+    print('Average runtime: {} seconds'.format(avg_time))
+
+def run(file_name, preprocess_img, display_img):
+    background(WHITE)
+    img = getImage(file_name, preprocess_img)
+    if img:
+        if display_img: image(img, 0, 0)
+        img.loadPixels()
+        GBIPG(img.pixels)
+        return True
+    else:
+        return False
 
 
 def GBIPG(img_pxls):
