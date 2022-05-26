@@ -1,7 +1,8 @@
 {
     "image": {
         "file_name": "3.png",
-        "preprocess": true
+        "preprocess": true,
+        "display": true
     },
     "circles": {
         "min_radius": 8,

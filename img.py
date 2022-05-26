@@ -1,8 +1,10 @@
 from const import *
 import utils
 
-def displayImage(file_name, preprocess = True):
-    ''' Preprocess (if specified) and display image on the canvas.
+def getImage(file_name, preprocess = True):
+    ''' 
+    Preprocess (if specified) given image file and return a PImage object.
+    If an error occurred during the preprocessing, this returns None.
     
     Parameters:
         file_name: str := Name of the image file. Must be stored in the 'data'
@@ -12,20 +14,19 @@ def displayImage(file_name, preprocess = True):
                                loaded image. Initially set to True.
                                
     Return Value:
-        boolean := If the image was displayed successfully.
+        PImage | None
     '''
     if not file_name.endswith('.png'):
         print('Error: Supplied image is not in PNG format.')
-        return False
+        return None
     
     img = loadImage(file_name)
     
     if preprocess: 
         if not preprocessImage(img):
-            return False
+            return None
     
-    image(img, 0, 0)
-    return True
+    return img
     
 def preprocessImage(img):
     ''' Preprocess the given image. 

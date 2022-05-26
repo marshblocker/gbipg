@@ -2,7 +2,7 @@ import time
 import random as rand
 import json
 
-from img import displayImage
+from img import getImage
 from classes import Point, CirclesAdjacencyGraph
 from const import *
 import utils
@@ -19,9 +19,13 @@ def setup():
 
     file_name = config_json['image']['file_name']
     preprocess = config_json['image']['preprocess']
+    display_img = config_json['image']['display']
 
-    if displayImage(file_name, preprocess):
-        GBIPG(False)
+    img = getImage(file_name, preprocess)
+    if img:
+        if display_img:
+            image(img, 0, 0)
+        GBIPG(True)
         print('Success')    
     else: 
         print('Failed')
