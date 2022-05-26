@@ -46,6 +46,9 @@ def GBIPG(img_pxls):
 
     Parameters:
         img_pxls: list[color] := The pixels of the image reference.
+
+    Return Value:
+        None
     '''
     fig_random_points, bg_random_points = generate_random_points(img_pxls)
 
@@ -58,14 +61,14 @@ def GBIPG(img_pxls):
         bg_cag, visualize=True, color_scheme=BG_COLOR_SCHEME)
 
 
-def generate_random_points(canvas_pxls, visualize=False, color_scheme=RED_COLOR_SCHEME):
+def generate_random_points(img_pxls, visualize=False, color_scheme=RED_COLOR_SCHEME):
     '''
     Return a list of random points in the background and a list of random points in the figure. 
     The random points are generated such that they do not overlap with other points, 
     figure boundary, and the canvas wall.
 
     Parameters:
-        canvas_pxls: list[color]
+        img_pxls: list[color]
         visualize: boolean := If True, the random points will be drawn on the canvas
                               using circles with radius MIN_CIRCLE_RADIUS. Note that 
                               this will draw over the canvas, so if the canvas' pixel 
@@ -83,10 +86,10 @@ def generate_random_points(canvas_pxls, visualize=False, color_scheme=RED_COLOR_
 
     for i in range(MAX_NUM_CIRCLES):
         x, y = int(rand.uniform(0, WIDTH)), int(rand.uniform(0, HEIGHT))
-        p = Point(x, y, canvas_pxls)
+        p = Point(x, y, img_pxls)
         overlap = False
 
-        if p.will_overlap_wall() or p.will_overlap_fig_boundary(canvas_pxls):
+        if p.will_overlap_wall() or p.will_overlap_fig_boundary(img_pxls):
             overlap = True
 
         if not overlap:
@@ -113,19 +116,19 @@ def generate_random_points(canvas_pxls, visualize=False, color_scheme=RED_COLOR_
     return (fig_random_points, bg_random_points)
 
 
-def build_circles_adjacency_graph(center_points, canvas_pxls, visualize=False, color_scheme=[RED_COLOR_SCHEME]):
+def build_circles_adjacency_graph(center_points, img_pxls, visualize=False, color_scheme=[RED_COLOR_SCHEME]):
     ''' Build the CirclesAdjacencyGraph from the given center_points.
 
     Parameters:
         center_points: list[Point]
-        canvas_pxls: list[color]
+        img_pxls: list[color]
         visualize: boolean
         color_scheme: list[str] := list of color hex strings that will be used as argument to fill().
 
     Return Value:
         cag: CirclesAdjacencyGraph
     '''
-    cag = CirclesAdjacencyGraph(center_points, canvas_pxls)
+    cag = CirclesAdjacencyGraph(center_points, img_pxls)
 
     if visualize:
         cag.visualize(color_scheme)
