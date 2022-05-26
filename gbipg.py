@@ -39,26 +39,18 @@ def setup():
           )
 
 
-def GBIPG(img_pxls, overlap_output=False):
+def GBIPG(img_pxls):
     ''' 
     Generate compactly-filled, randomized circles on the background and the 
     figure using the Graph-based Ishihara Plate Generation (GBIPG) Algorithm.
 
     Parameters:
         img_pxls: list[color] := The pixels of the image reference.
-
-        overlap_output: boolean := If True, overlap the output of this function 
-                                   to the current canvas. Otherwise, clear the 
-                                   background and display the output. This is 
-                                   initially set to False.
     '''
     fig_random_points, bg_random_points = generate_random_points(img_pxls)
 
     fig_cag = build_circles_adjacency_graph(fig_random_points, img_pxls)
     bg_cag = build_circles_adjacency_graph(bg_random_points, img_pxls)
-
-    if not overlap_output:
-        background(WHITE)
 
     solved_fig_cag = solve_csp_of_cag(
         fig_cag, visualize=True, color_scheme=FIG_COLOR_SCHEME)
