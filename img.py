@@ -52,7 +52,7 @@ def preprocessImage(img):
         if p_color in [WHITE_RGB, BLACK_RGB]:
             continue
         elif utils.is_greyscale(p_color):
-            r, g, b = red(p_color), green(p_color), blue(p_color)
+            r, g, b = utils.get_rgb(p_color)
             if r + g + b < GREYSCALE_THRESHOLD * 3:
                 img.pixels[i] = BLACK_RGB
             else:

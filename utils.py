@@ -114,8 +114,12 @@ def opposite_colr_point_in_circle(p, r, canvas_pxls):
     
     return False
 
+def get_rgb(colr):
+    return (red(colr), green(colr), blue(colr)) 
+
 def print_rgb(colr):
-    print(red(colr), green(colr), blue(colr))
+    r, g, b = get_rgb(colr)
+    print(r, g, b)
     
 def is_greyscale(colr):
     '''
