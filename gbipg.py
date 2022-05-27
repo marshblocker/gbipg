@@ -45,6 +45,8 @@ def normal_mode(img):
 def benchmark_mode(img, iterations):
     print('Program start.')
     avg_time = 0.0
+    variance = 0.0
+    duration_list = []
 
     success = True
     for i in range(1, iterations+1):
@@ -53,6 +55,7 @@ def benchmark_mode(img, iterations):
         success = run(img)
 
         duration = round(time.time() - start_time, 3)
+        duration_list.append(duration)
         avg_time += duration
         print('Iteration {} of {}: {} seconds.'
               .format(i, iterations, duration))
@@ -60,13 +63,16 @@ def benchmark_mode(img, iterations):
         if not success:
             print('Failed at iteration {} of {}'.format(i, iterations))
             avg_time = avg_time / i
+            variance = sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1)
             break
 
     if success:
         print('Success.')
         avg_time = round(avg_time / iterations, 3)
+        variance = round(sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1), 3)
     
     print('Average runtime: {} seconds'.format(avg_time))
+    print('Variance: {}'.format(variance))
 
 def run(img):
     background(WHITE)
