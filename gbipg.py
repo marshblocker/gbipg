@@ -72,7 +72,7 @@ def benchmark_mode(img, iterations):
         variance = round(sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1), 3)
     
     print('Average runtime: {} seconds'.format(avg_time))
-    print('Variance: {}'.format(variance))()
+    print('Variance: {}'.format(variance))
 
 def run(img):
     background(WHITE)
