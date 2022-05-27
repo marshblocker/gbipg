@@ -1,19 +1,24 @@
 {
-    "mode": {
-        "type": "benchmark",
-        "benchmark_iterations": 1
+    "run": {
+        "mode": "normal",
+        "benchmark_iterations": 10
     },
     "image": {
         "file_name": "3.png",
         "preprocess": true,
         "display": true
     },
-    "circles": {
-        "min_radius": 8,
-        "max_num": 50000
-    },
-    "color_scheme": {
-        "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
-        "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
+    "plate": {
+        "width": 800,
+        "height": 800,
+        "wall_radius": 300,
+        "circles": {
+            "min_radius": 8,
+            "max_num": 50000,
+            "color_scheme": {
+                "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
+                "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
+            }
+        }
     }
 }

@@ -7,9 +7,10 @@ from classes import Point, CirclesAdjacencyGraph
 from const import *
 import utils
 
+def settings():
+    size(WIDTH, HEIGHT)
 
 def setup():
-    size(800, 800)
     background(WHITE)
 
     config = open('config.json')
@@ -17,7 +18,7 @@ def setup():
     config.close()
 
     # This could be 'normal' mode or 'benchmark' mode.
-    MODE = config_json['mode']['type']
+    MODE = config_json['run']['mode']
 
     FILE_NAME = config_json['image']['file_name']
     PREPROCESS_IMG = config_json['image']['preprocess']
@@ -29,7 +30,7 @@ def setup():
         if MODE == 'normal':
             normal_mode(img, img.pixels, DISPLAY_IMG)
         elif MODE == 'benchmark':
-            ITERATIONS = config_json['mode']['benchmark_iterations']
+            ITERATIONS = config_json['run']['benchmark_iterations']
             benchmark_mode(img, img.pixels, DISPLAY_IMG, ITERATIONS)
         else:
             print('Error: Invalid mode.')
