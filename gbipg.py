@@ -11,8 +11,6 @@ def settings():
     size(WIDTH, HEIGHT)
 
 def setup():
-    background(WHITE)
-
     config = open('config.json')
     config_json = json.load(config)
     config.close()
@@ -22,16 +20,14 @@ def setup():
 
     FILE_NAME = config_json['image']['file_name']
     PREPROCESS_IMG = config_json['image']['preprocess']
-    DISPLAY_IMG = config_json['image']['display']
 
     img = getImage(FILE_NAME, PREPROCESS_IMG)
-    img.loadPixels()
     if img:
         if MODE == 'normal':
-            normal_mode(img, img.pixels, DISPLAY_IMG)
+            normal_mode(img)
         elif MODE == 'benchmark':
             ITERATIONS = config_json['run']['benchmark_iterations']
-            benchmark_mode(img, img.pixels, DISPLAY_IMG, ITERATIONS)
+            benchmark_mode(img, ITERATIONS)
         else:
             print('Error: Invalid mode.')
             exit()
@@ -39,14 +35,14 @@ def setup():
         print('Failed.')
         exit()
 
-def normal_mode(img, img_pxls, display_img):
+def normal_mode(img):
     print('Program start.')
-    if run(img, img_pxls, display_img):
+    if run(img):
         print('Success.')
     else:
         print('Failed.')
 
-def benchmark_mode(img, img_pxls, display_img, iterations):
+def benchmark_mode(img, iterations):
     print('Program start.')
     avg_time = 0.0
 
@@ -54,7 +50,7 @@ def benchmark_mode(img, img_pxls, display_img, iterations):
     for i in range(1, iterations+1):
         start_time = time.time()
 
-        success = run(img, img_pxls, display_img)
+        success = run(img)
 
         duration = round(time.time() - start_time, 3)
         avg_time += duration
@@ -72,11 +68,11 @@ def benchmark_mode(img, img_pxls, display_img, iterations):
     
     print('Average runtime: {} seconds'.format(avg_time))
 
-def run(img, img_pxls, display_img):
+def run(img):
     background(WHITE)
     if img:
-        if display_img: image(img, 0, 0)
-        GBIPG(img_pxls)
+        img.loadPixels()
+        GBIPG(img.pixels)
         return True
     else:
         return False
@@ -98,13 +94,13 @@ def GBIPG(img_pxls):
     fig_cag = build_circles_adjacency_graph(fig_random_points, img_pxls)
     bg_cag = build_circles_adjacency_graph(bg_random_points, img_pxls)
 
-    solved_fig_cag = solve_csp_of_cag(
-        fig_cag, visualize=True, color_scheme=FIG_COLOR_SCHEME)
-    solved_bg_cag = solve_csp_of_cag(
-        bg_cag, visualize=True, color_scheme=BG_COLOR_SCHEME)
+    solved_fig_cag = solve_csp_of_cag(fig_cag, FIG_COLOR_SCHEME)
+    solved_bg_cag = solve_csp_of_cag(bg_cag, BG_COLOR_SCHEME)
+
+    fill_up_crevices(img_pxls)
     
 
-def generate_random_points(img_pxls, visualize=False, color_scheme=RED_COLOR_SCHEME):
+def generate_random_points(img_pxls):
     '''
     Return a list of random points in the background and a list of random points in the figure. 
     The random points are generated such that they do not overlap with other points, 
@@ -112,12 +108,6 @@ def generate_random_points(img_pxls, visualize=False, color_scheme=RED_COLOR_SCH
 
     Parameters:
         img_pxls: list[color]
-        visualize: boolean := If True, the random points will be drawn on the canvas
-                              using circles with radius MIN_CIRCLE_RADIUS. Note that 
-                              this will draw over the canvas, so if the canvas' pixel 
-                              information is needed, don't use this (or transfer the 
-                              circles in another image). This is initially set to False.
-        color_scheme: list[str] := list of color hex strings that will be used as argument to fill().
 
     Return Value:
         (fig_random_points, bg_random_points): tuple[list[Point], list[Point]]
@@ -127,64 +117,49 @@ def generate_random_points(img_pxls, visualize=False, color_scheme=RED_COLOR_SCH
 
     stroke(BLACK)
 
-    for i in range(MAX_NUM_CIRCLES):
-        x, y = int(rand.uniform(0, WIDTH)), int(rand.uniform(0, HEIGHT))
-        p = Point(x, y, img_pxls)
-        overlap = False
+    start = WIDTH/2 - WALL_RADIUS
+    end = WIDTH/2 + WALL_RADIUS
+    box_size = BOX_SIZE
 
-        if p.will_overlap_wall() or p.will_overlap_fig_boundary(img_pxls):
-            overlap = True
+    for i in range(start, end, box_size):
+        for j in range(start, end, box_size):
+            x = int(rand.uniform(i + MIN_CIRCLE_RADIUS, i + box_size - MIN_CIRCLE_RADIUS))
+            y = int(rand.uniform(j + MIN_CIRCLE_RADIUS, j + box_size - MIN_CIRCLE_RADIUS))
+            p = Point(x, y, img_pxls)
+            overlap = False
 
-        if not overlap:
-            # TODO: Don't check all points in random_points, only points near p.
-            random_points = fig_random_points if p.in_fig() else bg_random_points
-            for p2 in random_points:
-                if p.will_overlap_point(p2):
-                    overlap = True
-                    break
+            if p.will_overlap_wall() or p.will_overlap_fig_boundary(img_pxls):
+                overlap = True
 
-        if not overlap:
-            if p.in_fig():
-                fig_random_points.append(p)
-            else:
-                bg_random_points.append(p)
-
-    if visualize:
-        r = MIN_CIRCLE_RADIUS
-        for p in fig_random_points + bg_random_points:
-            fill(rand.choice(color_scheme))
-            x, y = p.get_coord()
-            ellipse(x, y, 2*r, 2*r)
+            if not overlap:
+                if p.in_fig():
+                    fig_random_points.append(p)
+                else:
+                    bg_random_points.append(p)
 
     return (fig_random_points, bg_random_points)
 
 
-def build_circles_adjacency_graph(center_points, img_pxls, visualize=False, color_scheme=[RED_COLOR_SCHEME]):
+def build_circles_adjacency_graph(center_points, img_pxls):
     ''' Build the CirclesAdjacencyGraph from the given center_points.
 
     Parameters:
         center_points: list[Point]
         img_pxls: list[color]
-        visualize: boolean
-        color_scheme: list[str] := list of color hex strings that will be used as argument to fill().
 
     Return Value:
         cag: CirclesAdjacencyGraph
     '''
     cag = CirclesAdjacencyGraph(center_points, img_pxls)
 
-    if visualize:
-        cag.visualize(color_scheme)
-
     return cag
 
 
-def solve_csp_of_cag(cag, visualize=False, color_scheme=[RED_COLOR_SCHEME]):
+def solve_csp_of_cag(cag, color_scheme):
     ''' Solve the Constraint Satisfaction Problem of the Circles Adjacency Graph cag.
 
     Params:
         cag: CirclesAdjacencyGraph
-        visualize: boolean
         color_scheme: list[str] := list of color hex strings that will be used as argument to fill().
 
     Return Value:
@@ -204,12 +179,34 @@ def solve_csp_of_cag(cag, visualize=False, color_scheme=[RED_COLOR_SCHEME]):
 
     solved_cag = cag
 
-    if visualize:
-        noStroke()
-        for node in solved_cag.nodes:
-            fill(rand.choice(color_scheme))
-            x, y = node.center.get_coord()
-            r = node.radius
-            ellipse(x, y, 2*r, 2*r)
+    noStroke()
+    for node in solved_cag.nodes:
+        fill(rand.choice(color_scheme))
+        x, y = node.center.get_coord()
+        r = node.radius
+        ellipse(x, y, 2*r, 2*r)
 
     return solved_cag
+
+def fill_up_crevices(img_pxls):
+    '''Fill up remaining crevices using Monte Carlo algorithm.'''
+    start = WIDTH/2 - WALL_RADIUS
+    end = WIDTH/2 + WALL_RADIUS
+    for i in range(20000):
+        loadPixels()
+        x, y = int(rand.uniform(start, end-1)), int(rand.uniform(start, end-1))
+        p = Point(x, y, img_pxls)
+        r = rand.randint(2, MIN_CIRCLE_RADIUS)
+        overlap = False
+
+        if p.will_overlap_wall():
+            overlap = True
+        
+        if p.will_overlap_something(r, pixels):
+            overlap = True
+
+        if not overlap:
+            color_scheme = FIG_COLOR_SCHEME if p.in_fig() else BG_COLOR_SCHEME
+            fill(rand.choice(color_scheme))
+            ellipse(x, y, 2*r, 2*r)
+

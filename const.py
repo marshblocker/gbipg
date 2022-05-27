@@ -21,6 +21,5 @@ BG_COLOR_SCHEME = config_json['plate']['circles']['color_scheme']['background']
 RED_COLOR_SCHEME = ['#ff0000']
 
 MIN_CIRCLE_RADIUS = config_json['plate']['circles']['min_radius']
-MAX_NUM_CIRCLES = config_json['plate']['circles']['max_num']
-
 WALL_RADIUS = config_json['plate']['wall_radius']
+BOX_SIZE = config_json['plate']['circles']['box_size']

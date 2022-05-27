@@ -47,6 +47,9 @@ class Point:
     def will_overlap_fig_boundary(self, canvas_pxls):
         return utils.opposite_colr_point_in_circle(self, MIN_CIRCLE_RADIUS, canvas_pxls)
 
+    def will_overlap_something(self, r, canvas_pxls):
+        return utils.other_colr_point_in_circle(self, r, canvas_pxls)
+
 
 class Node():
     ''' Node of the CirclesAdjacencyGraph class.
