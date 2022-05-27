@@ -1,5 +1,6 @@
 import math
 import random
+import time
 
 from const import *
 from img import getImage
@@ -41,6 +42,38 @@ def normal_mode(img):
     else:
         print('Failed.')
 
+def benchmark_mode(img, iterations):
+    print('Program start.')
+    avg_time = 0.0
+    variance = 0.0
+    duration_list = []
+
+    success = True
+    for i in range(1, iterations+1):
+        start_time = time.time()
+
+        success = run(img)
+
+        duration = round(time.time() - start_time, 3)
+        duration_list.append(duration)
+        avg_time += duration
+        print('Iteration {} of {}: {} seconds.'
+              .format(i, iterations, duration))
+
+        if not success:
+            print('Failed at iteration {} of {}'.format(i, iterations))
+            avg_time = avg_time / i
+            variance = sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1)
+            break
+
+    if success:
+        print('Success.')
+        avg_time = round(avg_time / iterations, 3)
+        variance = round(sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1), 3)
+    
+    print('Average runtime: {} seconds'.format(avg_time))
+    print('Variance: {}'.format(variance))
+
 def run(img):
     background(WHITE)
     if img:
@@ -52,9 +85,9 @@ def run(img):
 
 def monte_carlo(img_pxls):
     remaining_canvas_area = math.pi * WALL_RADIUS**2
-    MIN_UNFILLED_AREA = remaining_canvas_area * 0.6
+    MIN_UNFILLED_AREA = remaining_canvas_area * 0.4
     MIN_RADIUS = 3
-    MAX_RADIUS = 20
+    MAX_RADIUS = 10
 
     noStroke()
     while remaining_canvas_area > MIN_UNFILLED_AREA:
@@ -78,10 +111,6 @@ def monte_carlo(img_pxls):
 
             circle_area = math.pi * r**2
             remaining_canvas_area -= circle_area
-            print('{}'.format(remaining_canvas_area))
-
-    print('Done')
-
         
 
 def will_overlap_wall(coord):
