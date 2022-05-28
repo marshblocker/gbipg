@@ -133,8 +133,8 @@ def is_MC_parameters_valid():
         print("Error: Circles' maximum radius parameter is too large.")
         return False
 
-    if MC_CONST.MIN_UNFILLED_CANVAS_RATIO > 1.0:
-        print("Error: Invalid value for the minimum unfilled canvas ratio parameter. Should be less than 1.0.")
+    if MC_CONST.MIN_UNFILLED_CANVAS_RATIO > 1.0 or MC_CONST.MIN_UNFILLED_CANVAS_RATIO < 0.0:
+        print("Error: Invalid value for the minimum unfilled canvas ratio parameter. Should be between 0.0 and 1.0.")
         return False
 
     for color_hex in MC_CONST.BG_COLOR_SCHEME:
