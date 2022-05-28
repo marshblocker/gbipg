@@ -30,7 +30,7 @@ java -jar path/to/processing-py.jar gbipg.py
 After a few seconds, the following Ishihara plate should display on a new window: ![Ishihara plate of a hand](./preview/hand-gbipg.png)
 
 ### GBIPG and Monte Carlo
-Within the `gbipg/` directory, there is `gbipg.py` which executes the GBIPG algorithm (the program we run in the Quick Start section) and `montecarlo.py` which executes the traditional Monte Carlo algorithm. If you want to use the Monte Carlo algorithm, just run `java -jar path/to/processing-py.jar montecarlo.py` in your terminal. Just note that the Monte Carlo algorithm is comparably slower than the GBIPG algorithm.
+Within the `gbipg/` directory, there is `gbipg.py` which executes the GBIPG algorithm (the program we run in the Quick Start section) and `montecarlo.py` which executes the traditional [Monte Carlo algorithm](https://ianfaust.com/2016/02/19/Ishihara/). If you want to use the Monte Carlo algorithm, just run `java -jar path/to/processing-py.jar montecarlo.py` in your terminal. Just note that the Monte Carlo algorithm is comparably slower than the GBIPG algorithm.
 
 ### Changing the Model Parameters
 Within the `gbipg/data/` directory, there is `config.json` which stores the parameters of both `gbipg.py` and `montecarlo.py` as separate attributes. You can change it depending on your need. Here is a table that describes what each of the parameters do:
