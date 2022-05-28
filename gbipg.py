@@ -28,10 +28,8 @@ def setup():
 
 def normal_mode(img):
     print('Program start.')
-    if run(img):
-        print('Success.')
-    else:
-        print('Failed.')
+    run(img)
+    print('Success.')
 
 def benchmark_mode(img, iterations):
     print('Program start.')
@@ -39,41 +37,27 @@ def benchmark_mode(img, iterations):
     variance = 0.0
     duration_list = []
 
-    success = True
     for i in range(1, iterations+1):
         start_time = time.time()
 
-        success = run(img)
+        run(img)
 
         duration = round(time.time() - start_time, 3)
         duration_list.append(duration)
         avg_time += duration
-        print('Iteration {} of {}: {} seconds.'
-              .format(i, iterations, duration))
+        print('Iteration {} of {}: {} seconds.'.format(i, iterations, duration))
 
-        if not success:
-            print('Failed at iteration {} of {}'.format(i, iterations))
-            avg_time = avg_time / i
-            variance = sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1)
-            break
-
-    if success:
-        print('Success.')
-        avg_time = round(avg_time / iterations, 3)
-        variance = round(sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1), 3)
+    print('Success.')
+    avg_time = round(avg_time / iterations, 3)
+    variance = round(sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1), 3)
     
     print('Average runtime: {} seconds'.format(avg_time))
     print('Variance: {}'.format(variance))
 
 def run(img):
     background(const.WHITE)
-    if img:
-        img.loadPixels()
-        GBIPG(img.pixels)
-        return True
-    else:
-        return False
-
+    img.loadPixels()
+    GBIPG(img.pixels)
 
 def GBIPG(img_pxls):
     ''' 
