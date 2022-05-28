@@ -244,7 +244,7 @@ def is_GBIPG_parameters_valid():
         return False
 
     if GBIPG_CONST.WIDTH != GBIPG_CONST.HEIGHT:
-        print("Error: Canvas' width and height parameter are not equal.")
+        print("Error: Canvas' width and height parameters are not equal.")
         return False
 
     if GBIPG_CONST.WALL_RADIUS >= GBIPG_CONST.WIDTH / 2:

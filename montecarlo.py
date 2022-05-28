@@ -131,7 +131,7 @@ def is_MC_parameters_valid():
         return False
 
     if MC_CONST.WIDTH != MC_CONST.HEIGHT:
-        print("Error: Canvas' width and height parameter are not equal.")
+        print("Error: Canvas' width and height parameters are not equal.")
         return False
 
     if MC_CONST.WALL_RADIUS >= MC_CONST.WIDTH / 2:
