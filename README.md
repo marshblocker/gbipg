@@ -1,5 +1,5 @@
 # gbipg
-Graph-based Ishihara Plate Generation Algorithm. Implemented in Processing Python Mode.
+Graph-based [Ishihara Plate](https://en.wikipedia.org/wiki/Ishihara_test) Generation Algorithm. Implemented in [Processing Python Mode](https://py.processing.org/).
 
 ## Table of Contents
 * [Getting Started](#getting-started)
@@ -14,7 +14,7 @@ Graph-based Ishihara Plate Generation Algorithm. Implemented in Processing Pytho
 ## Getting Started
 ### Prerequisites
 To run this program from the command line, you need to have Java 8 and the standalone version of Processing.py installed in your machine. 
-To do so, follow the instruction in the Requirements section of this [tutorial by Processing.py](https://py.processing.org/tutorials/command-line/).
+To do so, follow the instruction in the _Requirements_ section of this [tutorial by Processing.py](https://py.processing.org/tutorials/command-line/).
 Take note of the location of `processing-py.jar` file, this will be the driver of our program.
 
 ### Installation
