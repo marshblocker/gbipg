@@ -1,21 +1,48 @@
 {
-    "run": {
-        "mode": "benchmark",
-        "benchmark_iterations": 30
+    "gbipg_config": {
+        "run": {
+            "mode": "normal",
+            "benchmark_iterations": 30
+        },
+        "image": {
+            "file_name": "dog.png",
+            "preprocess": true
+        },
+        "plate": {
+            "width": 800,
+            "height": 800,
+            "wall_radius": 300,
+            "circles": {
+                "min_radius": 5,
+                "box_size": 15,
+                "color_scheme": {
+                    "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
+                    "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
+                }
+            }
+        }
     },
-    "image": {
-        "file_name": "circle.png",
-        "preprocess": true
-    },
-    "plate": {
-        "width": 800,
-        "height": 800,
-        "wall_radius": 300,
-        "circles": {
-            "mc_max_radius": 10,
-            "color_scheme": {
-                "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
-                "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
+    "mc_config": {
+        "run": {
+            "mode": "normal",
+            "benchmark_iterations": 30
+        },
+        "image": {
+            "file_name": "dog.png",
+            "preprocess": true
+        },
+        "plate": {
+            "width": 300,
+            "height": 300,
+            "wall_radius": 130,
+            "min_unfilled_canvas_ratio": 0.4,
+            "circles": {
+                "min_radius": 1,
+                "max_radius": 5,
+                "color_scheme": {
+                    "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
+                    "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
+                }
             }
         }
     }

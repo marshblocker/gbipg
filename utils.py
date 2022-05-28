@@ -48,20 +48,21 @@ def distance_squared(p1, p2):
     return dx_squared + dy_squared
 
 
-def loc_to_coord(loc):
+def loc_to_coord(loc, ModelConst):
     '''
     Paremeter:
         loc: int
+        ModelConst: GBIPG_CONST | MC_CONST
 
     Return Value:
         (x, y): tuple[int, int]
     '''
-    x = loc % WIDTH
-    y = (loc - x) / WIDTH
+    x = loc % ModelConst.WIDTH
+    y = (loc - x) / ModelConst.WIDTH
     return (x, y)
 
 
-def get_opposite_colr_points_in_circle(p, r, canvas_pxls):
+def get_opposite_colr_points_in_circle(p, r, canvas_pxls, ModelConst):
     '''
     Get all points that are opposite the color of point p within the
     circle with center point p and radius r.
@@ -70,6 +71,7 @@ def get_opposite_colr_points_in_circle(p, r, canvas_pxls):
         p: Point := center point of the circle.
         r: int := radius of the circle.
         canvas_pxls: list[color] := color of each pixel in the canvas.
+        ModelConst: GBIPG_CONST | MC_CONST
 
     Return Value:
         opp_colr_points: list[int] := list of indices (in canvas_pxls) of points
@@ -83,19 +85,19 @@ def get_opposite_colr_points_in_circle(p, r, canvas_pxls):
 
     y_start = ceil(max(0, py - r))
     x_start = ceil(max(0, px - r))
-    y_end = ceil(min(HEIGHT, py + r + 1))
-    x_end = ceil(min(WIDTH, px + r + 1))
+    y_end = ceil(min(ModelConst.HEIGHT, py + r + 1))
+    x_end = ceil(min(ModelConst.WIDTH, px + r + 1))
 
     for p2y in range(y_start, y_end):
         for p2x in range(x_start, x_end):
-            p2_loc = WIDTH*p2y + p2x
+            p2_loc = ModelConst.WIDTH*p2y + p2x
             if distance_squared((px, py), (p2x, p2y)) <= r_squared and canvas_pxls[p2_loc] != p_colr:
                 opp_colr_points.append(p2_loc)
 
     return opp_colr_points
 
 
-def opposite_colr_point_in_circle(p, r, canvas_pxls):
+def opposite_colr_point_in_circle(p, r, canvas_pxls, ModelConst):
     '''
     Checks if a point that has its color opposite to point p is 
     within the circle with center point p and radius r.
@@ -104,6 +106,7 @@ def opposite_colr_point_in_circle(p, r, canvas_pxls):
         p: Point := center point of the circle.
         r: int := radius of the circle.
         canvas_pxls: list[color] := color of each pixel in the canvas.
+        ModelConst: GBIPG_CONST | MC_CONST
 
     Return Value:
         boolean := Returns True if a point with opposite color to point p 
@@ -115,30 +118,30 @@ def opposite_colr_point_in_circle(p, r, canvas_pxls):
 
     y_start = ceil(max(0, py - r))
     x_start = ceil(max(0, px - r))
-    y_end = ceil(min(HEIGHT, py + r + 1))
-    x_end = ceil(min(WIDTH, px + r + 1))
+    y_end = ceil(min(ModelConst.HEIGHT, py + r + 1))
+    x_end = ceil(min(ModelConst.WIDTH, px + r + 1))
 
     for p2y in range(y_start, y_end):
         for p2x in range(x_start, x_end):
-            p2_loc = WIDTH*p2y + p2x
+            p2_loc = ModelConst.WIDTH*p2y + p2x
             if distance_squared((px, py), (p2x, p2y)) <= r_squared and canvas_pxls[p2_loc] != p_colr:
                 return True
 
     return False
 
-def other_colr_point_in_circle(p, r, canvas_pxls):
+def other_colr_point_in_circle(p, r, canvas_pxls, ModelConst):
     px, py = p.get_coord()
     p_colr = BLACK_RGB if p.in_fig() else WHITE_RGB
     r_squared = r*r
 
     y_start = ceil(max(0, py - r))
     x_start = ceil(max(0, px - r))
-    y_end = ceil(min(HEIGHT, py + r + 1))
-    x_end = ceil(min(WIDTH, px + r + 1))
+    y_end = ceil(min(ModelConst.HEIGHT, py + r + 1))
+    x_end = ceil(min(ModelConst.WIDTH, px + r + 1))
 
     for p2y in range(y_start, y_end):
         for p2x in range(x_start, x_end):
-            p2_loc = WIDTH*p2y + p2x
+            p2_loc = ModelConst.WIDTH*p2y + p2x
             if distance_squared((px, py), (p2x, p2y)) <= r_squared and canvas_pxls[p2_loc] not in [BLACK_RGB, WHITE_RGB]:
                 return True
 
@@ -165,4 +168,15 @@ def is_greyscale(colr):
     if r != g or g != b:
         return False
 
+    return True
+
+def is_color_hex(inp):
+    valid_chars = [str(num) for num in range(10)] + [chr(x) for x in range(ord('A'), ord('F') + 1)]
+    if len(inp) != 7 or inp[0] != '#':
+        return False
+
+    for char in inp[1:].upper():
+        if char not in valid_chars:
+            return False
+    
     return True

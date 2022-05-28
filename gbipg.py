@@ -4,32 +4,23 @@ import json
 
 from img import getImage
 from classes import Point, CirclesAdjacencyGraph
-from const import *
+from const import GBIPG_CONST
 import utils
+import const
 
 def settings():
-    size(WIDTH, HEIGHT)
+    size(GBIPG_CONST.WIDTH, GBIPG_CONST.HEIGHT)
 
 def setup():
-    config = open('config.json')
-    config_json = json.load(config)
-    config.close()
-
-    # This could be 'normal' mode or 'benchmark' mode.
-    MODE = config_json['run']['mode']
-
-    FILE_NAME = config_json['image']['file_name']
-    PREPROCESS_IMG = config_json['image']['preprocess']
-
-    img = getImage(FILE_NAME, PREPROCESS_IMG)
-    if img:
-        if MODE == 'normal':
-            normal_mode(img)
-        elif MODE == 'benchmark':
-            ITERATIONS = config_json['run']['benchmark_iterations']
-            benchmark_mode(img, ITERATIONS)
+    if is_GBIPG_parameters_valid():
+        img = getImage(GBIPG_CONST.FILE_NAME, GBIPG_CONST, GBIPG_CONST.PREPROCESS_IMG)
+        if img:
+            if GBIPG_CONST.MODE == 'normal':
+                normal_mode(img)
+            elif GBIPG_CONST.MODE == 'benchmark':
+                benchmark_mode(img, GBIPG_CONST.BENCHMARK_ITERATIONS)
         else:
-            print('Error: Invalid mode.')
+            print('Failed.')
             exit()
     else:
         print('Failed.')
@@ -75,7 +66,7 @@ def benchmark_mode(img, iterations):
     print('Variance: {}'.format(variance))
 
 def run(img):
-    background(WHITE)
+    background(const.WHITE)
     if img:
         img.loadPixels()
         GBIPG(img.pixels)
@@ -100,8 +91,8 @@ def GBIPG(img_pxls):
     fig_cag = build_circles_adjacency_graph(fig_random_points, img_pxls)
     bg_cag = build_circles_adjacency_graph(bg_random_points, img_pxls)
 
-    solved_fig_cag = solve_csp_of_cag(fig_cag, FIG_COLOR_SCHEME)
-    solved_bg_cag = solve_csp_of_cag(bg_cag, BG_COLOR_SCHEME)
+    solved_fig_cag = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
+    solved_bg_cag = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
 
     fill_up_crevices(img_pxls)
     
@@ -121,19 +112,19 @@ def generate_random_points(img_pxls):
     bg_random_points = []
     fig_random_points = []
 
-    stroke(BLACK)
+    stroke(const.BLACK)
 
-    start = WIDTH/2 - WALL_RADIUS
-    end = WIDTH/2 + WALL_RADIUS
+    start = GBIPG_CONST.WIDTH/2 - GBIPG_CONST.WALL_RADIUS
+    end = GBIPG_CONST.WIDTH/2 + GBIPG_CONST.WALL_RADIUS
     
     # How distributed the points are in the canvas.
-    box_size = BOX_SIZE
+    box_size = GBIPG_CONST.BOX_SIZE
 
     for i in range(start, end, box_size):
         for j in range(start, end, box_size):
-            x = int(rand.uniform(i + MIN_CIRCLE_RADIUS, i + box_size - MIN_CIRCLE_RADIUS))
-            y = int(rand.uniform(j + MIN_CIRCLE_RADIUS, j + box_size - MIN_CIRCLE_RADIUS))
-            p = Point(x, y, img_pxls)
+            x = int(rand.uniform(i + GBIPG_CONST.MIN_CIRCLE_RADIUS, i + box_size - GBIPG_CONST.MIN_CIRCLE_RADIUS))
+            y = int(rand.uniform(j + GBIPG_CONST.MIN_CIRCLE_RADIUS, j + box_size - GBIPG_CONST.MIN_CIRCLE_RADIUS))
+            p = Point(x, y, img_pxls, GBIPG_CONST)
             overlap = False
 
             if p.will_overlap_wall() or p.will_overlap_fig_boundary(img_pxls):
@@ -158,7 +149,7 @@ def build_circles_adjacency_graph(center_points, img_pxls):
     Return Value:
         cag: CirclesAdjacencyGraph
     '''
-    cag = CirclesAdjacencyGraph(center_points, img_pxls)
+    cag = CirclesAdjacencyGraph(center_points, img_pxls, GBIPG_CONST)
 
     return cag
 
@@ -205,13 +196,13 @@ def fill_up_crevices(img_pxls):
     Return Value:
         None
     '''
-    start = WIDTH/2 - WALL_RADIUS
-    end = WIDTH/2 + WALL_RADIUS
+    start = GBIPG_CONST.WIDTH/2 - GBIPG_CONST.WALL_RADIUS
+    end = GBIPG_CONST.WIDTH/2 + GBIPG_CONST.WALL_RADIUS
     for i in range(20000):
         loadPixels()
         x, y = int(rand.uniform(start, end-1)), int(rand.uniform(start, end-1))
-        p = Point(x, y, img_pxls)
-        r = rand.randint(2, MIN_CIRCLE_RADIUS)
+        p = Point(x, y, img_pxls, GBIPG_CONST)
+        r = rand.randint(2, GBIPG_CONST.MIN_CIRCLE_RADIUS)
         overlap = False
 
         if p.will_overlap_wall():
@@ -221,7 +212,68 @@ def fill_up_crevices(img_pxls):
             overlap = True
 
         if not overlap:
-            color_scheme = FIG_COLOR_SCHEME if p.in_fig() else BG_COLOR_SCHEME
+            color_scheme = GBIPG_CONST.FIG_COLOR_SCHEME if p.in_fig() else GBIPG_CONST.BG_COLOR_SCHEME
             fill(rand.choice(color_scheme))
             ellipse(x, y, 2*r, 2*r)
+
+def is_GBIPG_parameters_valid():
+    positive_int_parameters = {
+        GBIPG_CONST.BENCHMARK_ITERATIONS: 'benchmark iterations',
+        GBIPG_CONST.WIDTH: 'width',
+        GBIPG_CONST.HEIGHT: 'height',
+        GBIPG_CONST.WALL_RADIUS: 'wall radius',
+        GBIPG_CONST.MIN_CIRCLE_RADIUS: 'minimum circle radius',
+        GBIPG_CONST.BOX_SIZE: 'box size'
+    }
+
+    for param in positive_int_parameters:
+        if type(param) != int or param <= 0:
+            print("Error: Invalid {} parameter value. Must be a non-zero, positive integer.".format(positive_int_parameters[param]))
+            return False
+
+    if GBIPG_CONST.MODE not in ['normal', 'benchmark']:
+        print("Error: Invalid mode parameter value. Must be 'normal' or 'benchmark'.")
+        return False
+
+    if type(GBIPG_CONST.PREPROCESS_IMG) != bool:
+        print("Error: Invalid preprocess image parameter value. Must be a boolean type.")
+        return False
+
+    if not GBIPG_CONST.FILE_NAME.endswith('.png'):
+        print("Error: Supplied image is not in PNG format.")
+        return False
+
+    if GBIPG_CONST.WIDTH != GBIPG_CONST.HEIGHT:
+        print("Error: Canvas' width and height parameter are not equal.")
+        return False
+
+    if GBIPG_CONST.WALL_RADIUS >= GBIPG_CONST.WIDTH / 2:
+        print("Error: Canvas' wall radius parameter is too large for the canvas' width/height parameter.")
+        print("Make sure that it is less than half of the canvas' width/height parameter.")
+        return False
+
+    if GBIPG_CONST.MIN_CIRCLE_RADIUS >= GBIPG_CONST.WALL_RADIUS / 2:
+        print("Error: Circles' minimum radius parameter is too large.")
+        return False
+
+    if GBIPG_CONST.BOX_SIZE >= GBIPG_CONST.WALL_RADIUS / 2:
+        print("Error: Box size parameter is too large.")
+        print("Make sure that it is less than half of the canvas' wall radius parameter.")
+        return False
+
+    if 2*GBIPG_CONST.MIN_CIRCLE_RADIUS >= GBIPG_CONST.BOX_SIZE:
+        print("Error: Circles' minimum radius parameter is too large for the box size parameter.")
+        return False
+
+    for color_hex in GBIPG_CONST.BG_COLOR_SCHEME:
+        if not utils.is_color_hex(color_hex):
+            print("Error: Invalid background color scheme parameter value.")
+            return False
+
+    for color_hex in GBIPG_CONST.FIG_COLOR_SCHEME:
+        if not utils.is_color_hex(color_hex):
+            print("Error: Invalid figure color scheme parameter value.")
+            return False
+
+    return True
 
