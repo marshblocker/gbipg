@@ -1,9 +1,5 @@
 import json
 
-config = open('config.json')
-config_json = json.load(config)
-config.close()
-
 BLACK = 0
 WHITE = 255
 
