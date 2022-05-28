@@ -24,8 +24,7 @@ def getImage(file_name, ModelConst, preprocess = True):
         return None
     
     if preprocess: 
-        if not preprocessImage(img, ModelConst):
-            return None
+        preprocessImage(img, ModelConst)
     
     return img
     
@@ -65,8 +64,6 @@ def preprocessImage(img, ModelConst):
             else:
                 img.pixels[i] = const.WHITE_RGB
     
-    return True
-
 def naive_greyscale(colr):
     r, g, b = utils.get_rgb(colr)
     ave = (r + g + b) / 3
