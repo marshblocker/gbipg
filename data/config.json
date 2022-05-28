@@ -2,10 +2,10 @@
     "gbipg_config": {
         "run": {
             "mode": "normal",
-            "benchmark_iterations": 30
+            "benchmark_iterations": 5
         },
         "image": {
-            "file_name": "dog.png",
+            "file_name": "hand.png",
             "preprocess": true
         },
         "plate": {
@@ -25,20 +25,20 @@
     "mc_config": {
         "run": {
             "mode": "normal",
-            "benchmark_iterations": 30
+            "benchmark_iterations": 5
         },
         "image": {
-            "file_name": "dog.png",
+            "file_name": "hand.png",
             "preprocess": true
         },
         "plate": {
-            "width": 300,
-            "height": 300,
-            "wall_radius": 130,
+            "width": 800,
+            "height": 800,
+            "wall_radius": 300,
             "min_unfilled_canvas_ratio": 0.4,
             "circles": {
-                "min_radius": 1,
-                "max_radius": 5,
+                "min_radius": 3,
+                "max_radius": 15,
                 "color_scheme": {
                     "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
                     "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
