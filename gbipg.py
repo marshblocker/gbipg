@@ -125,6 +125,8 @@ def generate_random_points(img_pxls):
 
     start = WIDTH/2 - WALL_RADIUS
     end = WIDTH/2 + WALL_RADIUS
+    
+    # How distributed the points are in the canvas.
     box_size = BOX_SIZE
 
     for i in range(start, end, box_size):
@@ -195,7 +197,14 @@ def solve_csp_of_cag(cag, color_scheme):
     return solved_cag
 
 def fill_up_crevices(img_pxls):
-    '''Fill up remaining crevices using Monte Carlo algorithm.'''
+    '''Fill up remaining crevices using Monte Carlo algorithm.
+    
+    Parameter:
+        img_pxls: list[color]
+
+    Return Value:
+        None
+    '''
     start = WIDTH/2 - WALL_RADIUS
     end = WIDTH/2 + WALL_RADIUS
     for i in range(20000):

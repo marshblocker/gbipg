@@ -49,6 +49,13 @@ def distance_squared(p1, p2):
 
 
 def loc_to_coord(loc):
+    '''
+    Paremeter:
+        loc: int
+
+    Return Value:
+        (x, y): tuple[int, int]
+    '''
     x = loc % WIDTH
     y = (loc - x) / WIDTH
     return (x, y)
