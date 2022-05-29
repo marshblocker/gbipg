@@ -145,35 +145,10 @@ class CirclesAdjacencyGraph:
         nodes: list[Node]
     '''
 
-    def __init__(self, center_points, canvas_pxls, ModelConst, save_frame):
+    def __init__(self, center_points, canvas_pxls, ModelConst):
         self.nodes = self._get_nodes(center_points, ModelConst)
         for i in range(len(self.nodes)):
             self.nodes[i].build_adj_nodes(i, self.nodes, canvas_pxls)
-
-        if ModelConst == GBIPG_CONST and GBIPG_CONST.SAVE_STATES:
-            noStroke()
-            r = GBIPG_CONST.MIN_CIRCLE_RADIUS
-            fig_colr = rand.choice(GBIPG_CONST.FIG_COLOR_SCHEME)
-            bg_colr = rand.choice(GBIPG_CONST.BG_COLOR_SCHEME)
-            for node in self.nodes:
-                fill(fig_colr if node.center.in_fig() else bg_colr)
-                cx, cy = node.center.get_coord()
-                ellipse(cx, cy, 2*r, 2*r)
-
-            for node in self.nodes:
-                stroke(bg_colr if node.center.in_fig() else fig_colr)
-                fill(bg_colr if node.center.in_fig() else fig_colr)
-                cx, cy = node.center.get_coord()
-                for indx in node.adj_nodes:
-                    node2 = self.nodes[indx]
-                    cx2, cy2 = node2.center.get_coord()
-                    line(cx, cy, cx2, cy2)
-                    ellipse(cx, cy, r, r)
-
-            if save_frame:
-                img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step2.png"
-                saveFrame(img_name)
-                background(const.WHITE_RGB)
 
     def _get_nodes(self, center_points, ModelConst):
         nodes = []
