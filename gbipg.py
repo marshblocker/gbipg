@@ -56,10 +56,9 @@ def benchmark_mode(img, iterations):
 
 def run(img):
     background(const.WHITE)
-    img.loadPixels()
-    GBIPG(img.pixels)
+    GBIPG(img)
 
-def GBIPG(img_pxls):
+def GBIPG(img):
     ''' 
     Generate compactly-filled, randomized circles on the background and the 
     figure using the Graph-based Ishihara Plate Generation (GBIPG) Algorithm.
@@ -70,15 +69,18 @@ def GBIPG(img_pxls):
     Return Value:
         None
     '''
-    fig_random_points, bg_random_points = generate_random_points(img_pxls)
+    img.loadPixels
+    fig_random_points, bg_random_points = generate_random_points(img.pixels)
 
-    fig_cag = build_circles_adjacency_graph(fig_random_points, img_pxls, False)
-    bg_cag = build_circles_adjacency_graph(bg_random_points, img_pxls, True)
+    fig_cag = build_circles_adjacency_graph(fig_random_points, img.pixels, False)
+    bg_cag = build_circles_adjacency_graph(bg_random_points, img.pixels, True)
 
+    image(img, 0, 0)
     solved_fig_cag = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
     solved_bg_cag = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
+    display_final_nodes(solved_fig_cag.nodes, solved_bg_cag.nodes)
 
-    fill_up_crevices(img_pxls)
+    fill_up_crevices(img.pixels)
     
 
 def generate_random_points(img_pxls):
@@ -193,8 +195,10 @@ def solve_csp_of_cag(cag, color_scheme):
         solved_cag: CirclesAdjacencyGraph := This is cag but with the radius of each of its node
                                              satisfying the CSP of cag.
     '''
+    noStroke()
     for i in range(len(cag.nodes)):
-        cag.nodes[i].radius = cag.nodes[i].max_radius
+        loadPixels()
+        cag.nodes[i].radius = utils.nearest_other_colored_pixel(cag.nodes[i], pixels)
         cx, cy = cag.nodes[i].center.get_coord()
         for indx in cag.nodes[i].adj_nodes:
             cx2, cy2 = cag.nodes[indx].center.get_coord()
@@ -204,20 +208,33 @@ def solve_csp_of_cag(cag, color_scheme):
                 cag.nodes[indx].max_radius = other_node_new_max_radius
                 cag.nodes[indx].adj_nodes.remove(i)
 
+        fill(rand.choice(color_scheme))
+        r = cag.nodes[i].radius
+        ellipse(cx, cy, 2*r, 2*r)
+
     solved_cag = cag
 
+    return solved_cag
+
+def display_final_nodes(fig_nodes, bg_nodes):
+    background(const.WHITE_RGB)
     noStroke()
-    for node in solved_cag.nodes:
-        fill(rand.choice(color_scheme))
-        x, y = node.center.get_coord()
+
+    for node in fig_nodes:
+        fill(rand.choice(GBIPG_CONST.FIG_COLOR_SCHEME))
+        cx, cy = node.center.get_coord()
         r = node.radius
-        ellipse(x, y, 2*r, 2*r)
+        ellipse(cx, cy, 2*r, 2*r)
+
+    for node in bg_nodes:
+        fill(rand.choice(GBIPG_CONST.BG_COLOR_SCHEME))
+        cx, cy = node.center.get_coord()
+        r = node.radius
+        ellipse(cx, cy, 2*r, 2*r)
 
     if GBIPG_CONST.SAVE_STATES:
         img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step3.png"
         saveFrame(img_name)
-
-    return solved_cag
 
 def fill_up_crevices(img_pxls):
     '''Fill up remaining crevices using Monte Carlo algorithm.
@@ -228,13 +245,16 @@ def fill_up_crevices(img_pxls):
     Return Value:
         None
     '''
+    smallest_r = 2
+    largest_r = 10
+
     start = GBIPG_CONST.WIDTH/2 - GBIPG_CONST.WALL_RADIUS
     end = GBIPG_CONST.WIDTH/2 + GBIPG_CONST.WALL_RADIUS
-    for i in range(20000):
+    for i in range(30000):
         loadPixels()
         x, y = int(rand.uniform(start, end-1)), int(rand.uniform(start, end-1))
         p = Point(x, y, img_pxls, GBIPG_CONST)
-        r = rand.randint(2, GBIPG_CONST.MIN_CIRCLE_RADIUS)
+        r = rand.randint(smallest_r, largest_r)
         overlap = False
 
         if p.will_overlap_wall():
