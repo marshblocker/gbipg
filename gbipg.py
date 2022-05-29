@@ -87,7 +87,7 @@ def GBIPG(img):
     filled_area_ratio = total_filled_area / total_area
     all_circles_max_radius = max(fig_circles_max_radius, bg_circles_max_radius)
 
-    fill_up_crevices(img.pixels, all_circles_max_radius)
+    fill_up_crevices(img.pixels, all_circles_max_radius, filled_area_ratio)
     
 
 def generate_random_points(img_pxls):
@@ -253,7 +253,7 @@ def display_final_nodes(fig_nodes, bg_nodes):
         img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step3.png"
         saveFrame(img_name)
 
-def fill_up_crevices(img_pxls, all_circles_max_radius):
+def fill_up_crevices(img_pxls, all_circles_max_radius, filled_area_ratio):
     '''Fill up remaining crevices using Monte Carlo algorithm.
     
     Parameter:
@@ -267,7 +267,15 @@ def fill_up_crevices(img_pxls, all_circles_max_radius):
 
     start = GBIPG_CONST.WIDTH/2 - GBIPG_CONST.WALL_RADIUS
     end = GBIPG_CONST.WIDTH/2 + GBIPG_CONST.WALL_RADIUS
-    for i in range(30000):
+
+    if filled_area_ratio >= 0.55:
+        N = 30000
+    elif filled_area_ratio >= 0.45:
+        N = 50000
+    else:
+        N = 80000
+
+    for i in range(N):
         loadPixels()
         x, y = int(rand.uniform(start, end-1)), int(rand.uniform(start, end-1))
         p = Point(x, y, img_pxls, GBIPG_CONST)
