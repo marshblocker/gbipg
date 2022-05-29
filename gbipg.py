@@ -108,8 +108,14 @@ def generate_random_points(img_pxls):
 
     for i in range(start, end, box_size):
         for j in range(start, end, box_size):
-            x = int(rand.uniform(i + GBIPG_CONST.MIN_CIRCLE_RADIUS, i + box_size - GBIPG_CONST.MIN_CIRCLE_RADIUS))
-            y = int(rand.uniform(j + GBIPG_CONST.MIN_CIRCLE_RADIUS, j + box_size - GBIPG_CONST.MIN_CIRCLE_RADIUS))
+            x = int(rand.uniform(
+                    min(end, i + GBIPG_CONST.MIN_CIRCLE_RADIUS), 
+                    min(end, i + box_size - GBIPG_CONST.MIN_CIRCLE_RADIUS)
+                ))
+            y = int(rand.uniform(
+                    min(end, j + GBIPG_CONST.MIN_CIRCLE_RADIUS), 
+                    min(end, j + box_size - GBIPG_CONST.MIN_CIRCLE_RADIUS)
+                ))
             p = Point(x, y, img_pxls, GBIPG_CONST)
             overlap = False
 
