@@ -61,6 +61,22 @@ def loc_to_coord(loc, ModelConst):
     y = (loc - x) / ModelConst.WIDTH
     return (x, y)
 
+def nearest_other_colored_pixel(node, pxls):
+    nearest_dist = node.max_radius
+    c = node.center
+    cx, cy = c.get_coord()
+    curr_max_radius = node.max_radius
+    opp_colr_points = get_opposite_colr_points_in_circle(
+        c, curr_max_radius, pxls, node._ModelConst)
+
+    for p2_loc in opp_colr_points:
+        p2x, p2y = loc_to_coord(p2_loc, node._ModelConst)
+
+        dist = distance((cx, cy), (p2x, p2y))
+        nearest_dist = min(nearest_dist, dist)
+
+    return nearest_dist
+
 
 def get_opposite_colr_points_in_circle(p, r, canvas_pxls, ModelConst):
     '''
