@@ -96,8 +96,8 @@ class Node():
                     adj_nodes.append(i)
 
         self.max_radius = max_radius
-
-        new_max_radius = self._nearest_fig_boundary_distance(canvas_pxls)
+        new_max_radius = utils.nearest_other_colored_pixel(self ,canvas_pxls)
+        
         if new_max_radius < self.max_radius:
             self.max_radius = new_max_radius
             adj_nodes = []
@@ -119,21 +119,6 @@ class Node():
         c1 = self.center.get_coord()
         c2 = n2.center.get_coord()
         return utils.distance(c1, c2) - GBIPG_CONST.MIN_CIRCLE_RADIUS
-
-    def _nearest_fig_boundary_distance(self, canvas_pxls):
-        nearest_dist = self.max_radius
-        c = self.center
-        curr_max_radius = self.max_radius
-        opp_colr_points = utils.get_opposite_colr_points_in_circle(
-            c, curr_max_radius, canvas_pxls, self._ModelConst)
-
-        for p2_loc in opp_colr_points:
-            p2x, p2y = utils.loc_to_coord(p2_loc, self._ModelConst)
-
-            distance = utils.distance(c.get_coord(), (p2x, p2y))
-            nearest_dist = min(nearest_dist, distance)
-
-        return nearest_dist
 
 
 class CirclesAdjacencyGraph:
