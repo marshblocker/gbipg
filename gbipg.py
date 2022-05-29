@@ -293,6 +293,10 @@ def fill_up_crevices(img_pxls, all_circles_max_radius, filled_area_ratio):
             fill(rand.choice(color_scheme))
             ellipse(x, y, 2*r, 2*r)
 
+    if GBIPG_CONST.SAVE_STATES:
+        img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step4.png"
+        saveFrame(img_name)    
+
 def is_GBIPG_parameters_valid():
     positive_int_parameters = {
         GBIPG_CONST.BENCHMARK_ITERATIONS: 'benchmark iterations',
