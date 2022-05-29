@@ -1,6 +1,7 @@
 import time
 import random as rand
 import json
+import math
 
 from img import getImage
 from classes import Point, CirclesAdjacencyGraph
@@ -76,11 +77,16 @@ def GBIPG(img):
     bg_cag = build_circles_adjacency_graph(bg_random_points, img.pixels, True)
 
     image(img, 0, 0)
-    solved_fig_cag, fig_circles_max_radius = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
-    solved_bg_cag, bg_circles_max_radius = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
+    solved_fig_cag, fig_circles_max_radius, fig_filled_area = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
+    solved_bg_cag, bg_circles_max_radius, bg_filled_area = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
     display_final_nodes(solved_fig_cag.nodes, solved_bg_cag.nodes)
 
+
+    total_area = math.pi * GBIPG_CONST.WALL_RADIUS**2
+    total_filled_area = fig_filled_area + bg_filled_area
+    filled_area_ratio = total_filled_area / total_area
     all_circles_max_radius = max(fig_circles_max_radius, bg_circles_max_radius)
+
     fill_up_crevices(img.pixels, all_circles_max_radius)
     
 
@@ -204,9 +210,11 @@ def solve_csp_of_cag(cag, color_scheme):
     '''
     noStroke()
     all_circles_max_radius = 0.0
+    filled_area = 0.0
     for i in range(len(cag.nodes)):
         loadPixels()
         cag.nodes[i].radius = utils.nearest_other_colored_pixel(cag.nodes[i], pixels)
+        filled_area += math.pi * cag.nodes[i].radius**2
         all_circles_max_radius = max(all_circles_max_radius, cag.nodes[i].radius)
         cx, cy = cag.nodes[i].center.get_coord()
         for indx in cag.nodes[i].adj_nodes:
@@ -223,7 +231,7 @@ def solve_csp_of_cag(cag, color_scheme):
 
     solved_cag = cag
 
-    return (solved_cag, all_circles_max_radius)
+    return (solved_cag, all_circles_max_radius, filled_area)
 
 def display_final_nodes(fig_nodes, bg_nodes):
     background(const.WHITE_RGB)
