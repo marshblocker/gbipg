@@ -40,7 +40,7 @@ Parameter | Description | Data Type | Example Value
 `run.mode` | Use the program normally or use it to benchmark the algorithm. | `str` | `"normal"`, `"benchmark"`
 `run.benchmark_iterations` | If `benchmark` mode, this parameter determines how many times the program will be run. | `int` | `2`, `10`
 `image.file_name` | The name of the PNG file used as input to the program. The file should be located in `gbipg/data` directory. | `str` | `"hand.png"`, `"circle.png"`
-`image.preprocess` | Preprocess the input image before being it is used as input to the program. It is recommended that this is _always_ set to `True`. | `bool` | `true`, `false`
+`image.preprocess` | Preprocess the input image before it is used as input to the program. It is recommended that this is _always_ set to `true`. | `bool` | `true`, `false`
 `plate.width` & `plate.height` | The width and height of the canvas. Their values should _always_ be equal. | `int` | `800`, `350`
 `plate.wall_radius` | The radius of the circular wall that sets the boundary of the background display. | `int` | `232`, `100`
 `plate.min_unfilled_canvas_ratio` | If the ratio of the remaining area over the total area of the canvas is below this parameter, then the Monte Carlo algorithm stops its execution. Its values is between `0.0` and `1.0`. _Only applicable to the Monte Carlo algorithm_. | `float` | `0.4`, `0.56`
