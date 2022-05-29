@@ -110,10 +110,8 @@ class Node():
 
     def _nearest_wall_distance(self):
         cx, cy = self.center.get_coord()
-
-        nearest_wall_x = cx if cx < GBIPG_CONST.WIDTH - cx else GBIPG_CONST.WIDTH - cx
-        nearest_wall_y = cy if cy < GBIPG_CONST.HEIGHT - cy else GBIPG_CONST.HEIGHT - cy
-        return min([nearest_wall_x, nearest_wall_y])
+        midx, midy = GBIPG_CONST.WIDTH/2, GBIPG_CONST.HEIGHT/2
+        return GBIPG_CONST.WALL_RADIUS - utils.distance((cx, cy), (midx, midy))
 
     def _other_node_distance(self, n2):
         c1 = self.center.get_coord()
