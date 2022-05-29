@@ -4,7 +4,7 @@ import json
 
 from img import getImage
 from classes import Point, CirclesAdjacencyGraph
-from const import GBIPG_CONST
+from const import GBIPG_CONST, WHITE_RGB
 import utils
 import const
 
@@ -72,8 +72,8 @@ def GBIPG(img_pxls):
     '''
     fig_random_points, bg_random_points = generate_random_points(img_pxls)
 
-    fig_cag = build_circles_adjacency_graph(fig_random_points, img_pxls)
-    bg_cag = build_circles_adjacency_graph(bg_random_points, img_pxls)
+    fig_cag = build_circles_adjacency_graph(fig_random_points, img_pxls, False)
+    bg_cag = build_circles_adjacency_graph(bg_random_points, img_pxls, True)
 
     solved_fig_cag = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
     solved_bg_cag = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
@@ -120,20 +120,39 @@ def generate_random_points(img_pxls):
                 else:
                     bg_random_points.append(p)
 
+    if GBIPG_CONST.SAVE_STATES:
+        noStroke()
+        r = GBIPG_CONST.MIN_CIRCLE_RADIUS
+
+        fill(rand.choice(GBIPG_CONST.FIG_COLOR_SCHEME))
+        for p in fig_random_points:
+            x, y = p.get_coord()
+            ellipse(x, y, 2*r, 2*r)
+
+        fill(rand.choice(GBIPG_CONST.BG_COLOR_SCHEME))
+        for p in bg_random_points:
+            x, y = p.get_coord()
+            ellipse(x, y, 2*r, 2*r)
+
+        img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step1.png"
+        saveFrame(img_name)
+        background(WHITE_RGB)
+
     return (fig_random_points, bg_random_points)
 
 
-def build_circles_adjacency_graph(center_points, img_pxls):
+def build_circles_adjacency_graph(center_points, img_pxls, save_frame):
     ''' Build the CirclesAdjacencyGraph from the given center_points.
 
     Parameters:
         center_points: list[Point]
         img_pxls: list[color]
+        saveFrame: bool
 
     Return Value:
         cag: CirclesAdjacencyGraph
     '''
-    cag = CirclesAdjacencyGraph(center_points, img_pxls, GBIPG_CONST)
+    cag = CirclesAdjacencyGraph(center_points, img_pxls, GBIPG_CONST, save_frame)
 
     return cag
 
@@ -168,6 +187,10 @@ def solve_csp_of_cag(cag, color_scheme):
         x, y = node.center.get_coord()
         r = node.radius
         ellipse(x, y, 2*r, 2*r)
+
+    if GBIPG_CONST.SAVE_STATES:
+        img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step3.png"
+        saveFrame(img_name)
 
     return solved_cag
 
