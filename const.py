@@ -18,6 +18,7 @@ class GBIPG_CONST:
 
     MODE = config_json['gbipg_config']['run']['mode']
     BENCHMARK_ITERATIONS = config_json['gbipg_config']['run']['benchmark_iterations']
+    SAVE_STATES = config_json['gbipg_config']['run']['save_states']
 
     FILE_NAME = config_json['gbipg_config']['image']['file_name']
     PREPROCESS_IMG = config_json['gbipg_config']['image']['preprocess']

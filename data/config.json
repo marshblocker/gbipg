@@ -2,10 +2,11 @@
     "gbipg_config": {
         "run": {
             "mode": "normal",
-            "benchmark_iterations": 5
+            "benchmark_iterations": 5,
+            "save_states": false
         },
         "image": {
-            "file_name": "hand.png",
+            "file_name": "circle.png",
             "preprocess": true
         },
         "plate": {
@@ -13,7 +14,7 @@
             "height": 800,
             "wall_radius": 300,
             "circles": {
-                "min_radius": 5,
+                "min_radius": 2,
                 "box_size": 15,
                 "color_scheme": {
                     "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
