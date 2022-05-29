@@ -76,11 +76,12 @@ def GBIPG(img):
     bg_cag = build_circles_adjacency_graph(bg_random_points, img.pixels, True)
 
     image(img, 0, 0)
-    solved_fig_cag = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
-    solved_bg_cag = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
+    solved_fig_cag, fig_circles_max_radius = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
+    solved_bg_cag, bg_circles_max_radius = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
     display_final_nodes(solved_fig_cag.nodes, solved_bg_cag.nodes)
 
-    fill_up_crevices(img.pixels)
+    all_circles_max_radius = max(fig_circles_max_radius, bg_circles_max_radius)
+    fill_up_crevices(img.pixels, all_circles_max_radius)
     
 
 def generate_random_points(img_pxls):
@@ -202,9 +203,11 @@ def solve_csp_of_cag(cag, color_scheme):
                                              satisfying the CSP of cag.
     '''
     noStroke()
+    all_circles_max_radius = 0.0
     for i in range(len(cag.nodes)):
         loadPixels()
         cag.nodes[i].radius = utils.nearest_other_colored_pixel(cag.nodes[i], pixels)
+        all_circles_max_radius = max(all_circles_max_radius, cag.nodes[i].radius)
         cx, cy = cag.nodes[i].center.get_coord()
         for indx in cag.nodes[i].adj_nodes:
             cx2, cy2 = cag.nodes[indx].center.get_coord()
@@ -220,7 +223,7 @@ def solve_csp_of_cag(cag, color_scheme):
 
     solved_cag = cag
 
-    return solved_cag
+    return (solved_cag, all_circles_max_radius)
 
 def display_final_nodes(fig_nodes, bg_nodes):
     background(const.WHITE_RGB)
@@ -242,7 +245,7 @@ def display_final_nodes(fig_nodes, bg_nodes):
         img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step3.png"
         saveFrame(img_name)
 
-def fill_up_crevices(img_pxls):
+def fill_up_crevices(img_pxls, all_circles_max_radius):
     '''Fill up remaining crevices using Monte Carlo algorithm.
     
     Parameter:
@@ -252,7 +255,7 @@ def fill_up_crevices(img_pxls):
         None
     '''
     smallest_r = 2
-    largest_r = 10
+    largest_r = max(smallest_r, int(all_circles_max_radius / 2))
 
     start = GBIPG_CONST.WIDTH/2 - GBIPG_CONST.WALL_RADIUS
     end = GBIPG_CONST.WIDTH/2 + GBIPG_CONST.WALL_RADIUS
