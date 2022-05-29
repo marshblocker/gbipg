@@ -319,13 +319,19 @@ def is_GBIPG_parameters_valid():
 
     for color_hex in GBIPG_CONST.BG_COLOR_SCHEME:
         if not utils.is_color_hex(color_hex):
-            print("Error: Invalid background color scheme parameter value.")
+            print("Error: Invalid background color scheme parameter value. Must be of the form '#xxxxxx'.")
             return False
+
+        if color_hex in ['#000000', '#FFFFFF']:
+            print("Error: Invalid background color scheme parameter value. Cannot use black or white as background color.")
 
     for color_hex in GBIPG_CONST.FIG_COLOR_SCHEME:
         if not utils.is_color_hex(color_hex):
-            print("Error: Invalid figure color scheme parameter value.")
+            print("Error: Invalid figure color scheme parameter value. Must be of the form '#xxxxxx'.")
             return False
+
+        if color_hex in ['#000000', '#FFFFFF']:
+            print("Error: Invalid figure color scheme parameter value. Cannot use black or white as figure color.")
 
     return True
 
