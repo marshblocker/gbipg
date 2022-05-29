@@ -63,7 +63,8 @@ class Node():
         adj_nodes: list[int] := list of index (in CirclesAdjacencyGraph) of nodes adjacent to this node.
     '''
 
-    def __init__(self, center, ModelConst):
+    def __init__(self, Id, center, ModelConst):
+        self.id = Id
         self.center = center
         self.radius = GBIPG_CONST.MIN_CIRCLE_RADIUS
         self.max_radius = GBIPG_CONST.MIN_CIRCLE_RADIUS
@@ -96,7 +97,7 @@ class Node():
                     adj_nodes.append(i)
 
         self.max_radius = max_radius
-        new_max_radius = utils.nearest_other_colored_pixel(self ,canvas_pxls)
+        new_max_radius = utils.nearest_other_colored_pixel(self, canvas_pxls)
         
         if new_max_radius < self.max_radius:
             self.max_radius = new_max_radius
@@ -133,9 +134,22 @@ class CirclesAdjacencyGraph:
         for i in range(len(self.nodes)):
             self.nodes[i].build_adj_nodes(i, self.nodes, canvas_pxls)
 
+        # Add heuristics. Re-order nodes by how largest max_radius first then 
+        # most adjacent nodes for tie-breaker.
+        self.nodes.sort(key= lambda x: (-x.max_radius, -len(x.adj_nodes)))
+
+        id_mapping = {} # Maps the old position of a node in nodes to its new position.
+        for i in range(len(self.nodes)):
+            id_mapping[self.nodes[i].id] = i
+        
+        for i in range(len(self.nodes)):
+            for j in range(len(self.nodes[i].adj_nodes)):
+                old_pos = self.nodes[i].adj_nodes[j]
+                self.nodes[i].adj_nodes[j] = id_mapping[old_pos]
+
     def _get_nodes(self, center_points, ModelConst):
         nodes = []
-        for p in center_points:
-            nodes.append(Node(p, ModelConst))
+        for i, p in enumerate(center_points):
+            nodes.append(Node(i, p, ModelConst))
 
         return nodes
