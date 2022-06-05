@@ -2,20 +2,22 @@
     "gbipg_config": {
         "run": {
             "mode": "normal",
-            "benchmark_iterations": 5,
+            "benchmark_iterations": 30,
             "save_states": false
         },
         "image": {
-            "file_name": "circle.png",
+            "file_name": "hand.png",
             "preprocess": true
         },
         "plate": {
             "width": 800,
             "height": 800,
             "wall_radius": 300,
+            "max_filled_area_ratio": 0.65,
             "circles": {
-                "min_radius": 2,
-                "box_size": 15,
+                "min_radius": 3,
+                "max_radius": 20,
+                "box_size": 20,
                 "color_scheme": {
                     "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
                     "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
@@ -36,10 +38,10 @@
             "width": 800,
             "height": 800,
             "wall_radius": 300,
-            "min_unfilled_canvas_ratio": 0.4,
+            "max_filled_area_ratio": 0.65,
             "circles": {
                 "min_radius": 3,
-                "max_radius": 15,
+                "max_radius": 20,
                 "color_scheme": {
                     "figure": ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"],
                     "background": ["#c77740", "#e49361", "#e8a970", "#d69a79"]
