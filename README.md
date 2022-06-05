@@ -49,7 +49,12 @@ In this step, we want to connect the center points in the canvas to form the _Ci
 In this step, we will solve for the _Constraint Satisfaction Problem_ of the constructed _Circles Adjacency Graph_. The constraint of the CSP is for the circles not to overlap with each other, and the goal state is for the radius of each circle to be at their most maximum value as much as possible where their radii are bounded by the `max_circle_radius` parameter. This step is implemented by doing the following _for each node in the CAG_:
 
 1. Set its `radius` to the _minimum_ between its `max_radius` and the distance to the nearest already-drawn circle within the area covered by the circle with `radius = min_circle_radius`.
-2. 
+2. Draw its circle.
+3. (Look-ahead step) For each of its adjacent nodes, decrease their `max_radius` until it will not overlap with the new `radius` of the current node.
+
+Afterwards, the goal state is reached. The image below shows the transition from the output of the second step to the output of the third step:
+
+![Step three visualization.](./preview/step-three.png)
 
 ## Getting Started With The Program
 ### Prerequisites
