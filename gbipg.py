@@ -13,7 +13,7 @@ def settings():
     size(GBIPG_CONST.WIDTH, GBIPG_CONST.HEIGHT)
 
 def setup():
-    if is_GBIPG_parameters_valid():
+    if GBIPG_CONST.is_parameters_valid():
         img = getImage(GBIPG_CONST.FILE_NAME, GBIPG_CONST, GBIPG_CONST.PREPROCESS_IMG)
         if img:
             if GBIPG_CONST.MODE == 'normal':
@@ -28,11 +28,22 @@ def setup():
         exit()
 
 def normal_mode(img):
+    '''Run the algorithm normally.
+
+    Parameters:
+        img: PImage
+    '''
     print('Program start.')
     run(img)
     print('Success.')
 
 def benchmark_mode(img, iterations):
+    '''Benchmark the algorithm to determine its average runtime and variance.
+
+    Parameters:
+        img: PImage
+        iterations: int := How many times the algorithm will be run.
+    '''
     print('Program start.')
     avg_time = 0.0
     variance = 0.0
@@ -50,7 +61,7 @@ def benchmark_mode(img, iterations):
 
     print('Success.')
     avg_time = round(avg_time / iterations, 3)
-    variance = round(sum([(duration - avg_time)**2 for duration in duration_list]) / (iterations - 1), 3)
+    variance = round(sum([(duration - avg_time)**2 for duration in duration_list]) / iterations, 3)
     
     print('Average runtime: {} seconds'.format(avg_time))
     print('Variance: {}'.format(variance))
@@ -65,7 +76,7 @@ def GBIPG(img):
     figure using the Graph-based Ishihara Plate Generation (GBIPG) Algorithm.
 
     Parameters:
-        img_pxls: list[color] := The pixels of the image reference.
+        img: PImage := The pixels of the image reference.
 
     Return Value:
         None
@@ -77,17 +88,11 @@ def GBIPG(img):
     bg_cag = build_circles_adjacency_graph(bg_random_points, img.pixels, True)
 
     image(img, 0, 0)
-    solved_fig_cag, fig_circles_max_radius, fig_filled_area = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
-    solved_bg_cag, bg_circles_max_radius, bg_filled_area = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
-    display_final_nodes(solved_fig_cag.nodes, solved_bg_cag.nodes)
+    solved_fig_cag = solve_csp_of_cag(fig_cag, GBIPG_CONST.FIG_COLOR_SCHEME)
+    solved_bg_cag = solve_csp_of_cag(bg_cag, GBIPG_CONST.BG_COLOR_SCHEME)
+    filled_area = display_final_nodes(solved_fig_cag.nodes, solved_bg_cag.nodes)
 
-
-    total_area = math.pi * GBIPG_CONST.WALL_RADIUS**2
-    total_filled_area = fig_filled_area + bg_filled_area
-    filled_area_ratio = total_filled_area / total_area
-    all_circles_max_radius = max(fig_circles_max_radius, bg_circles_max_radius)
-
-    fill_up_crevices(img.pixels, all_circles_max_radius, filled_area_ratio)
+    fill_up_crevices(img.pixels, filled_area)
     
 
 def generate_random_points(img_pxls):
@@ -209,13 +214,9 @@ def solve_csp_of_cag(cag, color_scheme):
                                              satisfying the CSP of cag.
     '''
     noStroke()
-    all_circles_max_radius = 0.0
-    filled_area = 0.0
     for i in range(len(cag.nodes)):
         loadPixels()
-        cag.nodes[i].radius = utils.nearest_other_colored_pixel(cag.nodes[i], pixels)
-        filled_area += math.pi * cag.nodes[i].radius**2
-        all_circles_max_radius = max(all_circles_max_radius, cag.nodes[i].radius)
+        cag.nodes[i].radius = min(GBIPG_CONST.MAX_CIRCLE_RADIUS, utils.nearest_other_colored_pixel(cag.nodes[i], pixels))
         cx, cy = cag.nodes[i].center.get_coord()
         for indx in cag.nodes[i].adj_nodes:
             cx2, cy2 = cag.nodes[indx].center.get_coord()
@@ -231,55 +232,63 @@ def solve_csp_of_cag(cag, color_scheme):
 
     solved_cag = cag
 
-    return (solved_cag, all_circles_max_radius, filled_area)
+    return solved_cag
 
 def display_final_nodes(fig_nodes, bg_nodes):
+    '''Display on the canvas the output of the GBIPG algorithm.
+
+    Parameters:
+        fig_nodes: list[Node]
+        bg_nodes: list[Node]
+
+    Return Value:
+        filled_area: float
+    '''
     background(const.WHITE_RGB)
     noStroke()
 
+    filled_area = 0
     for node in fig_nodes:
         fill(rand.choice(GBIPG_CONST.FIG_COLOR_SCHEME))
         cx, cy = node.center.get_coord()
         r = node.radius
         ellipse(cx, cy, 2*r, 2*r)
+        filled_area += math.pi * r**2
 
     for node in bg_nodes:
         fill(rand.choice(GBIPG_CONST.BG_COLOR_SCHEME))
         cx, cy = node.center.get_coord()
         r = node.radius
         ellipse(cx, cy, 2*r, 2*r)
+        filled_area += math.pi * r**2
 
     if GBIPG_CONST.SAVE_STATES:
         img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step3.png"
         saveFrame(img_name)
 
-def fill_up_crevices(img_pxls, all_circles_max_radius, filled_area_ratio):
+    return filled_area
+
+def fill_up_crevices(img_pxls, already_filled_area):
     '''Fill up remaining crevices using Monte Carlo algorithm.
     
-    Parameter:
+    Parameters:
         img_pxls: list[color]
+        already_filled_area: float
 
     Return Value:
         None
     '''
-    smallest_r = 2
-    largest_r = max(smallest_r, int(all_circles_max_radius / 2))
-
     start = GBIPG_CONST.WIDTH/2 - GBIPG_CONST.WALL_RADIUS
     end = GBIPG_CONST.WIDTH/2 + GBIPG_CONST.WALL_RADIUS
 
-    if filled_area_ratio >= 0.55:
-        N = 30000
-    elif filled_area_ratio >= 0.45:
-        N = 50000
-    else:
-        N = 80000
+    total_area = math.pi * GBIPG_CONST.WALL_RADIUS**2
+    max_filled_area = total_area * GBIPG_CONST.MAX_FILLED_AREA_RATIO
 
-    for i in range(N):
+    for _ in range(1000):
         loadPixels()
         x, y = int(rand.uniform(start, end-1)), int(rand.uniform(start, end-1))
         p = Point(x, y, img_pxls, GBIPG_CONST)
-        r = rand.randint(smallest_r, largest_r)
+        r = 10
         overlap = False
 
         if p.will_overlap_wall():
@@ -292,75 +301,31 @@ def fill_up_crevices(img_pxls, all_circles_max_radius, filled_area_ratio):
             color_scheme = GBIPG_CONST.FIG_COLOR_SCHEME if p.in_fig() else GBIPG_CONST.BG_COLOR_SCHEME
             fill(rand.choice(color_scheme))
             ellipse(x, y, 2*r, 2*r)
+            already_filled_area += math.pi * r**2
+
+    if GBIPG_CONST.MIN_CIRCLE_RADIUS > 1:
+        radius_choices = [3, 5]
+    else: radius_choices = [1]
+
+    while already_filled_area < max_filled_area:
+        loadPixels()
+        x, y = int(rand.uniform(start, end-1)), int(rand.uniform(start, end-1))
+        p = Point(x, y, img_pxls, GBIPG_CONST)
+        r = rand.choice(radius_choices)
+        overlap = False
+
+        if p.will_overlap_wall():
+            overlap = True
+        
+        if p.will_overlap_something(r, pixels):
+            overlap = True
+
+        if not overlap:
+            color_scheme = GBIPG_CONST.FIG_COLOR_SCHEME if p.in_fig() else GBIPG_CONST.BG_COLOR_SCHEME
+            fill(rand.choice(color_scheme))
+            ellipse(x, y, 2*r, 2*r)
+            already_filled_area += math.pi * r**2
 
     if GBIPG_CONST.SAVE_STATES:
         img_name = GBIPG_CONST.FILE_NAME.rstrip(".png") + "-step4.png"
-        saveFrame(img_name)    
-
-def is_GBIPG_parameters_valid():
-    positive_int_parameters = {
-        GBIPG_CONST.BENCHMARK_ITERATIONS: 'benchmark iterations',
-        GBIPG_CONST.WIDTH: 'width',
-        GBIPG_CONST.HEIGHT: 'height',
-        GBIPG_CONST.WALL_RADIUS: 'wall radius',
-        GBIPG_CONST.MIN_CIRCLE_RADIUS: 'minimum circle radius',
-        GBIPG_CONST.BOX_SIZE: 'box size'
-    }
-
-    for param in positive_int_parameters:
-        if type(param) != int or param <= 0:
-            print("Error: Invalid {} parameter value. Must be a non-zero, positive integer.".format(positive_int_parameters[param]))
-            return False
-
-    if GBIPG_CONST.MODE not in ['normal', 'benchmark']:
-        print("Error: Invalid mode parameter value. Must be 'normal' or 'benchmark'.")
-        return False
-
-    if type(GBIPG_CONST.PREPROCESS_IMG) != bool:
-        print("Error: Invalid preprocess image parameter value. Must be a boolean type.")
-        return False
-
-    if not GBIPG_CONST.FILE_NAME.endswith('.png'):
-        print("Error: Supplied image is not in PNG format.")
-        return False
-
-    if GBIPG_CONST.WIDTH != GBIPG_CONST.HEIGHT:
-        print("Error: Canvas' width and height parameters are not equal.")
-        return False
-
-    if GBIPG_CONST.WALL_RADIUS >= GBIPG_CONST.WIDTH / 2:
-        print("Error: Canvas' wall radius parameter is too large for the canvas' width/height parameter.")
-        print("Make sure that it is less than half of the canvas' width/height parameter.")
-        return False
-
-    if GBIPG_CONST.MIN_CIRCLE_RADIUS >= GBIPG_CONST.WALL_RADIUS / 2:
-        print("Error: Circles' minimum radius parameter is too large.")
-        return False
-
-    if GBIPG_CONST.BOX_SIZE >= GBIPG_CONST.WALL_RADIUS / 2:
-        print("Error: Box size parameter is too large.")
-        print("Make sure that it is less than half of the canvas' wall radius parameter.")
-        return False
-
-    if 2*GBIPG_CONST.MIN_CIRCLE_RADIUS >= GBIPG_CONST.BOX_SIZE:
-        print("Error: Circles' minimum radius parameter is too large for the box size parameter.")
-        return False
-
-    for color_hex in GBIPG_CONST.BG_COLOR_SCHEME:
-        if not utils.is_color_hex(color_hex):
-            print("Error: Invalid background color scheme parameter value. Must be of the form '#xxxxxx'.")
-            return False
-
-        if color_hex in ['#000000', '#FFFFFF']:
-            print("Error: Invalid background color scheme parameter value. Cannot use black or white as background color.")
-
-    for color_hex in GBIPG_CONST.FIG_COLOR_SCHEME:
-        if not utils.is_color_hex(color_hex):
-            print("Error: Invalid figure color scheme parameter value. Must be of the form '#xxxxxx'.")
-            return False
-
-        if color_hex in ['#000000', '#FFFFFF']:
-            print("Error: Invalid figure color scheme parameter value. Cannot use black or white as figure color.")
-
-    return True
-
+        saveFrame(img_name)

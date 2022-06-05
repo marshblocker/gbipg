@@ -1,6 +1,6 @@
 import math
 
-from const import *
+import const
 
 
 def distance(p1, p2):
@@ -49,8 +49,9 @@ def distance_squared(p1, p2):
 
 
 def loc_to_coord(loc, ModelConst):
-    '''
-    Paremeter:
+    '''Convert a location value to its coordinate form.
+
+    Parameters:
         loc: int
         ModelConst: GBIPG_CONST | MC_CONST
 
@@ -61,7 +62,19 @@ def loc_to_coord(loc, ModelConst):
     y = (loc - x) / ModelConst.WIDTH
     return (x, y)
 
+
 def nearest_other_colored_pixel(node, pxls):
+    '''
+    Returns the distance between a center point with the nearest pixel with 
+    different color as the center point.
+
+    Parameters:
+        node: Node
+        pxls: list[color]
+
+    Return Value:
+        nearest_dist: float
+    '''
     nearest_dist = node.max_radius
     c = node.center
     cx, cy = c.get_coord()
@@ -95,7 +108,7 @@ def get_opposite_colr_points_in_circle(p, r, canvas_pxls, ModelConst):
     '''
     opp_colr_points = []
     px, py = p.get_coord()
-    p_colr = BLACK_RGB if p.in_fig() else WHITE_RGB
+    p_colr = const.BLACK_RGB if p.in_fig() else const.WHITE_RGB
     r_squared = r*r
     i = 0
 
@@ -129,7 +142,7 @@ def opposite_colr_point_in_circle(p, r, canvas_pxls, ModelConst):
                    is within the circle.
     '''
     px, py = p.get_coord()
-    p_colr = BLACK_RGB if p.in_fig() else WHITE_RGB
+    p_colr = const.BLACK_RGB if p.in_fig() else const.WHITE_RGB
     r_squared = r*r
 
     y_start = ceil(max(0, py - r))
@@ -145,9 +158,21 @@ def opposite_colr_point_in_circle(p, r, canvas_pxls, ModelConst):
 
     return False
 
+
 def other_colr_point_in_circle(p, r, canvas_pxls, ModelConst):
+    '''Returns True if a pixel in the circle has a color other than black or white.
+
+    Parameters:
+        p: Point
+        r: int := radius
+        canvas_pxls: list[color]
+        ModelConst: ModelConst
+
+    Return Value:
+        bool
+    '''
     px, py = p.get_coord()
-    p_colr = BLACK_RGB if p.in_fig() else WHITE_RGB
+    p_colr = const.BLACK_RGB if p.in_fig() else const.WHITE_RGB
     r_squared = r*r
 
     y_start = ceil(max(0, py - r))
@@ -158,7 +183,7 @@ def other_colr_point_in_circle(p, r, canvas_pxls, ModelConst):
     for p2y in range(y_start, y_end):
         for p2x in range(x_start, x_end):
             p2_loc = ModelConst.WIDTH*p2y + p2x
-            if distance_squared((px, py), (p2x, p2y)) <= r_squared and canvas_pxls[p2_loc] not in [BLACK_RGB, WHITE_RGB]:
+            if distance_squared((px, py), (p2x, p2y)) <= r_squared and canvas_pxls[p2_loc] not in [const.BLACK_RGB, const.WHITE_RGB]:
                 return True
 
     return False
@@ -173,10 +198,8 @@ def print_rgb(colr):
     print(r, g, b)
 
 
-def is_greyscale(colr):
-    '''
-    Returns True if the pixel's color is greyscale.
-    '''
+def is_grayscale(colr):
+    '''Returns True if the pixel's color is grayscale.'''
     r = red(colr)
     g = green(colr)
     b = blue(colr)
@@ -186,7 +209,9 @@ def is_greyscale(colr):
 
     return True
 
+
 def is_color_hex(inp):
+    '''Returns True if the string input is in color hex format.'''
     valid_chars = [str(num) for num in range(10)] + [chr(x) for x in range(ord('A'), ord('F') + 1)]
     if len(inp) != 7 or inp[0] != '#':
         return False
@@ -194,5 +219,5 @@ def is_color_hex(inp):
     for char in inp[1:].upper():
         if char not in valid_chars:
             return False
-    
+
     return True
