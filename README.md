@@ -11,8 +11,10 @@ Graph-based [Ishihara Plate](https://en.wikipedia.org/wiki/Ishihara_test) Genera
     * [Changing the Model Parameters](#changing-the-model-parameters)
     * [Adding Your Own Input Image](#adding-your-own-input-image)
 
-## The GBIPG Algorithm
+## The GBIPG Algorithm 
 ### Summary
+![Step-by-step of the GBIPG algorithm visualized.](./preview/step-by-step.png)
+
 The _GBIPG_ algorithm is a novel way of generating _Ishihara Plates_. Normally, this process is done through the use of a _Monte Carlo_ (MC) algorithm (see this [extremely helpful resource by Ian Faust on how its done](https://ianfaust.com/2016/02/19/Ishihara/)), where the canvas is repeatedly placed with random circles until eventually it is compactly filled with it (and of course this process is done with the constraint that the circles should not overlap). But this is very inefficient, so we considered a different approach that does not rely on randomization too much. _GBIPG_ works by constructing a graph, where the nodes are the randomly-generated center points of the circles and the edges attached to the nodes represent possible overlapping with the other nearby nodes. We then solve its [Constraint Satisfaction Problem](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem), where the goal state is when the radius of each circles are maximized while, at the same time, satisfying the cosntraint that the circles do not overlap with each other. Afterwards, we get a canvas compactly filled with non-overlapping circles. To finish it off, we add a bit of the traditional Monte Carlo algorithm just to fill up the unfilled crevices with smaller circles. On average, the GBIPG algorithm is 9.31 times faster than the Monte Carlo algorithm.
 
 ### Data Collection and Preprocessing
