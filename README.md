@@ -9,11 +9,13 @@ Group 14 - Jendertuicy:
 * Nakano, Ryosuke
 
 ## Table of Contents
+* [Similar Studies](#similar-studies)
 * [The GBIPG Algorithm](#the-gbipg-algorithm)
     * [Summary](#summary)
     * [Data Collection and Preprocessing](#data-collection-and-preprocessing)
     * [Description of the Algorithm](#description-of-the-algorithm)
-* [Benchmark Results](#benchmark-results) 
+* [Benchmark Results](#benchmark-results)
+* [Repository Files Description](#repository-files-description)
 * [Getting Started With The Program](#getting-started-with-the-program)
     * [Prerequisites](#prerequisites)
     * [Installation](#installation)
@@ -23,12 +25,16 @@ Group 14 - Jendertuicy:
     * [Changing the Model Parameters](#changing-the-model-parameters)
     * [Adding Your Own Input Image](#adding-your-own-input-image)
 
+## Similar Studies
+([Go back to top](#table-of-contents)) <br> <br>
+In the topic of generating _Ishihara Plates_, the most commonly used method is the _Monte Carlo_ algorithm. Ian Faust discussed the method in his [blog post](https://ianfaust.com/2016/02/19/Ishihara/), while Nick Tierney used the same algorithm in his [blog post](https://www.njtierney.com/post/2020/05/31/ishihara/) but instead of determining the circles that can be found in the figure or in the background, he instead generates the random circles on the plate, overlay the figure on top of the circles, then color the circles that touches the figure with a different color.
+
 ## The GBIPG Algorithm
 ([Go back to top](#table-of-contents))
 ### Summary
 ![Step-by-step of the GBIPG algorithm visualized.](./preview/step-by-step.png)
 
-The _GBIPG_ algorithm is a novel way of generating _Ishihara Plates_. Normally, this process is done through the use of the [Monte Carlo](https://ianfaust.com/2016/02/19/Ishihara/) (MC) algorithm (see this [helpful resource by Ian Faust on how its done](https://ianfaust.com/2016/02/19/Ishihara/)), where the canvas is repeatedly placed with random circles until eventually it is compactly filled with it (and of course this process is done with the constraint that the circles should not overlap). But this is very inefficient, so we considered a different approach that does not rely on randomization too much. _GBIPG_ works by constructing a graph, where the nodes are the randomly-generated center points of the circles and the edges attached to the nodes represent possible overlapping with the other nearby nodes. We then solve its [Constraint Satisfaction Problem](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem), where the goal state is when the radius of each circles are maximized while, at the same time, satisfying the cosntraint that the circles do not overlap with each other. Afterwards, we get a canvas compactly filled with non-overlapping circles. To finish it off, we add a bit of the traditional _Monte Carlo_ algorithm just to fill up the unfilled crevices with smaller circles. On average, [the GBIPG algorithm is 9.31 times faster than the Monte Carlo algorithm](#benchmark-results).
+The _GBIPG_ algorithm is a novel way of generating _Ishihara Plates_. Normally, this process is done through the use of the [Monte Carlo](https://ianfaust.com/2016/02/19/Ishihara/) (MC) algorithm, where the canvas is repeatedly placed with random circles until eventually it is compactly filled with it (and of course this process is done with the constraint that the circles should not overlap). But this is very inefficient, so we considered a different approach that does not rely on randomization too much. _GBIPG_ works by constructing a graph, where the nodes are the randomly-generated center points of the circles and the edges attached to the nodes represent possible overlapping with the other nearby nodes. We then solve its [Constraint Satisfaction Problem](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem), where the goal state is when the radius of each circles are maximized while, at the same time, satisfying the cosntraint that the circles do not overlap with each other. Afterwards, we get a canvas compactly filled with non-overlapping circles. To finish it off, we add a bit of the traditional _Monte Carlo_ algorithm just to fill up the unfilled crevices with smaller circles. On average, [the GBIPG algorithm is 9.31 times faster than the Monte Carlo algorithm](#benchmark-results).
 
 ### Data Collection and Preprocessing
 The input image to our program _must_ be in _PNG_ format and, to achieve a better result, it is _suggested_ that image is converted in its grayscale form. It could have any dimension since the user can adjust the output image dimension themselves through the [model parameters](#changing-the-model-parameters). If the `preprocess` parameter is set to `true`, the program will preprocess the given input image by:
@@ -83,6 +89,21 @@ Initially, we want to compare our program with the [Monte Carlo implementation b
 
 View [this spreadsheet](https://docs.google.com/spreadsheets/d/1A1VS5mkUtzqHA3Krc85u9qbMVFJ5Yrub/edit?usp=sharing&ouid=107804559877014682539&rtpof=true&sd=true) to see the full details of the experiment. 
 
+## Repository Files Description
+([Go back to top](#table-of-contents))
+File Name | Description
+:---: | :---
+`classes.py` | Contains the classes used in the models.
+`const.py` | Contains the global constants and model-specific parameters.
+`gbipg.py` | Program implementation of the _GBIPG_ algorithm.
+`img.py` | Contains functions for the retrieval and preprocessing of the input images.
+`montecarlo.py` | Program implementation of the _Monte Carlo_ algorithm.
+`utils.py` | Contains helper functions.
+`data/color_schemes.txt` | Contains color scheme samples for the `bg_color_scheme` and `fig_color_scheme` model parameters.
+`data/config.json` | Contains the model parameters for both the _GBIPG_ and the _Monte Carlo_ algorithm. This is the public endpoint for configuring the model's parameters.
+`data/*.png` | Example input images.
+`preview/*.png` | Images used for this repository's README.
+
 
 ## Getting Started With The Program
 ([Go back to top](#table-of-contents))
@@ -125,7 +146,7 @@ Parameter | Description | Data Type | Example Value
 `plate.circles.min_radius` | The smallest possible radius of a circle in the canvas. | `int` | `5`, `11`
 `plate.circles.max_radius` | The largest possible radius of a circle in the canvas. | `int` | `15`, `8`
 `plate.circles.box_size` | How far the random points are distributed in the canvas. _Only applicable to the _GBIPG_ algorithm_. | `int` | `30`, `20`
-`plate.circles.color_scheme.figure` & `plate.circles.color_scheme.background` | The list of colors a circle on a figure/background can have. | `list[str]` | `["#3fac70", "#98a86d", "#c5bc6e", "#87934b"]`
+`plate.circles.color_scheme.figure` & `plate.circles.color_scheme.background` | The list of colors a circle on a figure/background can have. See `gbipg/data/color_schemes.txt` for color scheme samples. | `list[str]` | `["#3fac70", "#98a86d", "#c5bc6e", "#87934b"]`
 
 ### Adding Your Own Input Image
 Besides the sample input images in the `gbipg/data/` directory, you could also use your own image as input to the program by placing it in the `gbipg/data/` directory and replacing the `image.file_name` parameter with the file name of your image. Just make sure that your image is in .png format and that it is a [grayscale](https://en.wikipedia.org/wiki/Grayscale) image. You could use [this website](https://pinetools.com/grayscale-image) to convert your image to grayscale. It is discouraged to use heavily-detailed images as it can lead to poorly-rendered Ishihara plates.
