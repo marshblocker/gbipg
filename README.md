@@ -2,7 +2,12 @@
 Graph-based [Ishihara Plate](https://en.wikipedia.org/wiki/Ishihara_test) Generation Algorithm. Implemented in [Processing Python Mode](https://py.processing.org/).
 
 ## Table of Contents
-* [Getting Started](#getting-started)
+* [The GBIPG Algorithm](#the-gbipg-algorithm)
+    * [Summary](#summary)
+    * [Data Collection and Preprocessing](#data-collection-and-preprocessing)
+    * [Description of the Algorithm](#description-of-the-algorithm)
+* [Benchmark Results](#benchmark-results) 
+* [Getting Started With The Program](#getting-started-with-the-program)
     * [Prerequisites](#prerequisites)
     * [Installation](#installation)
 * [Usage](#usage)
