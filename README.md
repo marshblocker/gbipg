@@ -63,7 +63,7 @@ In this step, we fill the crevices of the canvas with smaller circles using the 
 
 ## Benchmark Results
 
-Initially, we want to compare our program with the [Monte Carlo implementation by Ian Faust](https://github.com/icfaust/IshiharaMC), but we have only lately realized that his program does not accept image as an input but, instead, requires the user to plot his/her figure before sending the equations to his program. This makes his program hard to give complex input such as a hand figure, so we decided to create our own implementation of the _Monte Carlo_ algorithm to generate Ishihara Plates that can also accept image as input. We benchmarked the _GBIPG_ algorithm and the _Monte Carlo_ algorithm and compared their results:
+Initially, we want to compare our program with the [Monte Carlo implementation by Ian Faust](https://github.com/icfaust/IshiharaMC), but we have only lately realized that his program does not accept image as an input, but instead, requires the user to plot his/her figure before sending the equations to his program. This makes his program hard to give complex input such as a hand figure, so we decided to create our own implementation of the _Monte Carlo_ algorithm to generate Ishihara Plates that can also accept image as input. We benchmarked the _GBIPG_ algorithm and the _Monte Carlo_ algorithm and compared their results:
 
 ![Benchmarking GBIPG and Monte Carlo](./preview/benchmark.png)
 
