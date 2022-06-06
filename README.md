@@ -1,7 +1,7 @@
 # gbipg
 Graph-based [Ishihara Plate](https://en.wikipedia.org/wiki/Ishihara_test) Generation Algorithm. Implemented in [Processing Python Mode](https://py.processing.org/).
 
-A Machine Project for CS 180. <br><br>
+Machine Project Submission for CS 180. <br><br>
 Group 14 - Jendertuicy:
 * De Castro, Hans
 * Dycaico, Julian
