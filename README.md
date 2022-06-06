@@ -13,7 +13,9 @@ Group 14 - Jendertuicy:
     * [Summary](#summary)
     * [Data Collection and Preprocessing](#data-collection-and-preprocessing)
     * [Description of the Algorithm](#description-of-the-algorithm)
-* [Benchmark Results](#benchmark-results) 
+* [Benchmark Results](#benchmark-results)
+* [Similar Studies](#similar-studies)
+* [Repository Files Description](#repository-files-description)
 * [Getting Started With The Program](#getting-started-with-the-program)
     * [Prerequisites](#prerequisites)
     * [Installation](#installation)
@@ -83,6 +85,25 @@ Initially, we want to compare our program with the [Monte Carlo implementation b
 
 View [this spreadsheet](https://docs.google.com/spreadsheets/d/1A1VS5mkUtzqHA3Krc85u9qbMVFJ5Yrub/edit?usp=sharing&ouid=107804559877014682539&rtpof=true&sd=true) to see the full details of the experiment. 
 
+## Similar Studies
+([Go back to top](#table-of-contents)) <br>
+As mentioned in [Benchmark Results](#benchmark-results), [Ian Faust](https://ianfaust.com/2016/02/19/Ishihara/) used the _Monte Carlo_ algorithm to generate an _Ishihara Plate_, while [Nick Tierney](https://www.njtierney.com/post/2020/05/31/ishihara/) used the same algorithm but instead of determining the circles that can be found in the figure or in the background, he instead generates the random circles on the plate, overlay the figure on top of the circles, then color the circles that touches the figure with a different color.
+
+## Repository Files Description
+([Go back to top](#table-of-contents))
+File Name | Description
+:---: | :---
+`classes.py` | Contains the classes used in the models.
+`const.py` | Contains the global constants and model-specific parameters.
+`gbipg.py` | Program implementation of the _GBIPG_ algorithm.
+`img.py` | Contains functions for the retrieval and preprocessing of the input images.
+`montecarlo.py` | Program implementation of the _Monte Carlo_ algorithm.
+`utils.py` | Contains helper functions.
+`data/color_schemes.txt` | Contains color scheme samples for the `bg_color_scheme` and `fig_color_scheme` model parameters.
+`data/config.json` | Contains the model parameters for both the _GBIPG_ and the _Monte Carlo_ algorithm. This is the public endpoint for configuring the model's parameters.
+`data/*.png` | Example input images.
+`preview/*.png` | Images used for this repository's README.
+
 
 ## Getting Started With The Program
 ([Go back to top](#table-of-contents))
@@ -125,7 +146,7 @@ Parameter | Description | Data Type | Example Value
 `plate.circles.min_radius` | The smallest possible radius of a circle in the canvas. | `int` | `5`, `11`
 `plate.circles.max_radius` | The largest possible radius of a circle in the canvas. | `int` | `15`, `8`
 `plate.circles.box_size` | How far the random points are distributed in the canvas. _Only applicable to the _GBIPG_ algorithm_. | `int` | `30`, `20`
-`plate.circles.color_scheme.figure` & `plate.circles.color_scheme.background` | The list of colors a circle on a figure/background can have. | `list[str]` | `["#3fac70", "#98a86d", "#c5bc6e", "#87934b"]`
+`plate.circles.color_scheme.figure` & `plate.circles.color_scheme.background` | The list of colors a circle on a figure/background can have. See `gbipg/data/color_schemes.txt` for color scheme samples. | `list[str]` | `["#3fac70", "#98a86d", "#c5bc6e", "#87934b"]`
 
 ### Adding Your Own Input Image
 Besides the sample input images in the `gbipg/data/` directory, you could also use your own image as input to the program by placing it in the `gbipg/data/` directory and replacing the `image.file_name` parameter with the file name of your image. Just make sure that your image is in .png format and that it is a [grayscale](https://en.wikipedia.org/wiki/Grayscale) image. You could use [this website](https://pinetools.com/grayscale-image) to convert your image to grayscale. It is discouraged to use heavily-detailed images as it can lead to poorly-rendered Ishihara plates.
