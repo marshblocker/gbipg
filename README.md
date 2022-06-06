@@ -98,13 +98,14 @@ Parameter | Description | Data Type | Example Value
 :---: | :---: | :---: | :---:
 `run.mode` | Use the program normally or use it to benchmark the algorithm. | `str` | `"normal"`, `"benchmark"`
 `run.benchmark_iterations` | If `benchmark` mode, this parameter determines how many times the program will be run. | `int` | `2`, `10`
+`run.save_states` | Save the output of each step of the GBIPG algorithm as image file. | `bool` | `true`, `false` 
 `image.file_name` | The name of the PNG file used as input to the program. The file should be located in `gbipg/data` directory. | `str` | `"hand.png"`, `"circle.png"`
 `image.preprocess` | Preprocess the input image before it is used as input to the program. It is recommended that this is _always_ set to `true`. | `bool` | `true`, `false`
 `plate.width` & `plate.height` | The width and height of the canvas. Their values should _always_ be equal. | `int` | `800`, `350`
 `plate.wall_radius` | The radius of the circular wall that sets the boundary of the background display. | `int` | `232`, `100`
-`plate.min_unfilled_canvas_ratio` | If the ratio of the remaining area over the total area of the canvas is below this parameter, then the Monte Carlo algorithm stops its execution. Its values is between `0.0` and `1.0`. _Only applicable to the Monte Carlo algorithm_. | `float` | `0.4`, `0.56`
+`plate.max_filled_area_ratio` | If the ratio of the remaining area over the total area of the canvas is above this parameter, then the algorithm stops its execution. Its values is between `0.0` and `1.0`. | `float` | `0.4`, `0.56`
 `plate.circles.min_radius` | The smallest possible radius of a circle in the canvas. | `int` | `5`, `11`
-`plate.circles.max_radius` | The largest possible radius of a circle in the canvas. _Only applicable to the Monte Carlo algorithm_. | `int` | `15`, `8`
+`plate.circles.max_radius` | The largest possible radius of a circle in the canvas. | `int` | `15`, `8`
 `plate.circles.box_size` | How far the random points are distributed in the canvas. _Only applicable to the GBIPG algorithm_. | `int` | `30`, `20`
 `plate.circles.color_scheme.figure` & `plate.circles.color_scheme.background` | The list of colors a circle on a figure/background can have. | `list[str]` | `["#3fac70", "#98a86d", "#c5bc6e", "#87934b"]`
 
