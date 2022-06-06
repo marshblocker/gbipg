@@ -5,7 +5,7 @@ import math
 
 from img import getImage
 from classes import Point, CirclesAdjacencyGraph
-from const import GBIPG_CONST, WHITE_RGB
+from const import GBIPG_CONST, RED_COLOR_SCHEME, WHITE_RGB
 import utils
 import const
 
@@ -141,6 +141,11 @@ def generate_random_points(img_pxls):
                     bg_random_points.append(p)
 
     if GBIPG_CONST.SAVE_STATES:
+        stroke(RED_COLOR_SCHEME[0])
+        for i in range(start, end, box_size):
+            line(i, 0, i, GBIPG_CONST.HEIGHT)
+            line(0, i, GBIPG_CONST.WIDTH, i)
+
         noStroke()
         r = GBIPG_CONST.MIN_CIRCLE_RADIUS
 
