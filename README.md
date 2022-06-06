@@ -1,6 +1,13 @@
 # gbipg
 Graph-based [Ishihara Plate](https://en.wikipedia.org/wiki/Ishihara_test) Generation Algorithm. Implemented in [Processing Python Mode](https://py.processing.org/).
 
+A Machine Project for CS 180. <br><br>
+Group 14 - Jendertuicy:
+* De Castro, Hans
+* Dycaico, Julian
+* Marinas, Kenneth
+* Nakano, Ryosuke
+
 ## Table of Contents
 * [The GBIPG Algorithm](#the-gbipg-algorithm)
     * [Summary](#summary)
@@ -16,7 +23,8 @@ Graph-based [Ishihara Plate](https://en.wikipedia.org/wiki/Ishihara_test) Genera
     * [Changing the Model Parameters](#changing-the-model-parameters)
     * [Adding Your Own Input Image](#adding-your-own-input-image)
 
-## The GBIPG Algorithm 
+## The GBIPG Algorithm
+([Go back to top](#table-of-contents))
 ### Summary
 ![Step-by-step of the GBIPG algorithm visualized.](./preview/step-by-step.png)
 
@@ -67,6 +75,7 @@ In this step, we fill the crevices of the canvas with smaller circles using the 
 ![Step four visualization.](./preview/step-four.png)
 
 ## Benchmark Results
+([Go back to top](#table-of-contents))
 
 Initially, we want to compare our program with the [Monte Carlo implementation by Ian Faust](https://github.com/icfaust/IshiharaMC), but we have only lately realized that his program does not accept image as an input, but instead, requires the user to plot his/her figure before sending the equations to his program. This makes his program hard to give complex input such as a hand figure, so we decided to create our own implementation of the _Monte Carlo_ algorithm to generate Ishihara Plates that can also accept image as input. We benchmarked the _GBIPG_ algorithm and the _Monte Carlo_ algorithm and compared their results:
 
@@ -76,6 +85,8 @@ View [this spreadsheet](https://docs.google.com/spreadsheets/d/1A1VS5mkUtzqHA3Kr
 
 
 ## Getting Started With The Program
+([Go back to top](#table-of-contents))
+
 ### Prerequisites
 To run this program from the command line, you need to have Java 8 and the standalone version of Processing.py installed in your machine. 
 To do so, follow the instruction in the _Requirements_ section of this [tutorial by Processing.py](https://py.processing.org/tutorials/command-line/).
@@ -85,6 +96,8 @@ Take note of the location of `processing-py.jar` file, this will be the driver o
 Clone this repo in your machine using `git clone https://github.com/marshblocker/gbipg.git`.
 
 ## Usage
+([Go back to top](#table-of-contents))
+
 ### Quick Start
 To get a quick insight on what the program does, run the following commands in your terminal:
 ```
