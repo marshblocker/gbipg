@@ -1,0 +1,4 @@
+green: ["#3fac70", "#98a86d", "#c5bc6e", "#87934b"]
+brown: ["#c77740", "#e49361", "#e8a970", "#d69a79"]
+blue: ["#4188ff", "#649ffe", "#79aafe", "#92bbff", "#accafe"]
+yellow-orange: ["#ef9b0f", "#fed900", "#ffee75", "#feff01", "#fefbcd"]
